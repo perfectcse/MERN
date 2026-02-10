@@ -1,23 +1,28 @@
 import { useState } from "react";
 import "./App.css";
-function App() { // App is a functional component that represents that part of the user interrface.
-  const [count, setCount] = useState(0);
+function App() {
+  const [show, setShow] = useState(false);
+  const [name, setName] = useState("");
 
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h1>Day 1 – Counter App</h1>
-      <h2>Count: {count}</h2>
+    <div style={{ textAlign: "center", marginTop: "40px" }}>
+      <h1>Day 2 – React Logic</h1>
 
-      <button onClick={() => setCount(count + 1)}>
-        Increment
+      <button onClick={() => setShow(!show)}>
+        {show ? "Hide" : "Show"} Message
       </button>
 
-      <button
-        onClick={() => setCount(count - 1)}
-        style={{ marginLeft: "10px" }}
-      >
-        Decrement
-      </button>
+      {show && <p>Hello, welcome to React 🚀</p>}
+
+      <br /><br />
+
+      <input
+        type="text"
+        placeholder="Type your name"
+        onChange={(e) => setName(e.target.value)}
+      />
+
+      {name && <h3>Your name: {name}</h3>}
     </div>
   );
 }
