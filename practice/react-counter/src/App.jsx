@@ -1,25 +1,39 @@
-import { useState, useEffect } from "react";
-import "./App.css";
+import { useState } from "react";
+import './App.css';
 function App() {
-  const [posts, setPosts] = useState([]);
+  const [title, setTitle] = useState("");
+  const [submitted, setSubmitted] = useState("");
 
-  useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/posts?_limit=5")
-      .then((response) => response.json())
-      .then((data) => setPosts(data))
-      .catch((error) => console.log(error));
-  }, []);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSubmitted(title);
+
+    fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ title })
+    })
+      .then((res) => res.json())
+      .then((data) => console.log("Response:", data));
+  };
 
   return (
-    <div style={{ textAlign: "center" }}>
-      <h1>Day 3 – API Fetch</h1>
+    <div style={{ textAlign: "center", marginTop: "40px" }}>
+      <h1>Day 4 – Form & POST</h1>
 
-      {posts.map((post) => (
-        <div key={post.id} style={{ marginBottom: "20px" }}>
-          <h3>{post.title}</h3>
-          <p>{post.body}</p>
-        </div>
-      ))}
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Enter title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <button type="submit">Submit</button>
+      </form>
+
+      {submitted && <h3>Submitted: {submitted}</h3>}
     </div>
   );
 }
