@@ -1,12 +1,20 @@
 import { useState } from "react";
-import './App.css';
+import "./App.css";
+
 function App() {
   const [title, setTitle] = useState("");
   const [submitted, setSubmitted] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setSubmitted(title);
+
+    if (!title.trim()) {
+      alert("Please enter a title");
+      return;
+    }
+
+    setLoading(true);
 
     fetch("https://jsonplaceholder.typicode.com/posts", {
       method: "POST",
@@ -16,11 +24,21 @@ function App() {
       body: JSON.stringify({ title })
     })
       .then((res) => res.json())
-      .then((data) => console.log("Response:", data));
+      .then((data) => {
+        console.log("Response:", data);
+        setSubmitted(title);
+        setTitle("");
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "40px" }}>
+    <div className="app-container">
       <h1>Day 4 – Form & POST</h1>
 
       <form onSubmit={handleSubmit}>
@@ -30,10 +48,19 @@ function App() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <button type="submit">Submit</button>
+
+        <br />
+
+        <button type="submit" disabled={loading}>
+          {loading ? "Submitting..." : "Submit"}
+        </button>
       </form>
 
-      {submitted && <h3>Submitted: {submitted}</h3>}
+      {submitted && (
+        <h3 className="submitted-text">
+          Submitted: {submitted}
+        </h3>
+      )}
     </div>
   );
 }
