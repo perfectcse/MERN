@@ -100,3 +100,23 @@ const name = "Vishal";
 ## Learning
 - React can send data to server
 - Forms are core to web apps
+..............................
+Day-5 – React + Express
+
+Backend:
+- Express setup
+- GET route
+- res.json()
+- CORS
+
+Frontend:
+- useEffect
+- Fetch API
+- useState
+- Dynamic rendering
+
+Flow:
+React → Express → JSON → UI
+
+Key Lesson:
+Always test backend alone first.

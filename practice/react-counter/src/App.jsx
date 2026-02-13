@@ -1,66 +1,41 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 
 function App() {
-  const [title, setTitle] = useState("");
-  const [submitted, setSubmitted] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!title.trim()) {
-      alert("Please enter a title");
-      return;
-    }
-
-    setLoading(true);
-
-    fetch("https://jsonplaceholder.typicode.com/posts", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ title })
-    })
+  useEffect(() => {
+    fetch("http://localhost:5000/api/posts")
       .then((res) => res.json())
       .then((data) => {
-        console.log("Response:", data);
-        setSubmitted(title);
-        setTitle("");
+        setPosts(data);
+        setLoading(false);
       })
-      .catch((error) => {
-        console.error("Error:", error);
-      })
-      .finally(() => {
+      .catch((err) => {
+        console.error("Error:", err);
         setLoading(false);
       });
-  };
+  }, []);
 
   return (
-    <div className="app-container">
-      <h1>Day 4 – Form & POST</h1>
+    <div className="app">
+      <div className="container">
+        <h1>Day-5 – React + Express</h1>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Enter title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-
-        <br />
-
-        <button type="submit" disabled={loading}>
-          {loading ? "Submitting..." : "Submit"}
-        </button>
-      </form>
-
-      {submitted && (
-        <h3 className="submitted-text">
-          Submitted: {submitted}
-        </h3>
-      )}
+        {loading ? (
+          <p className="loading">Loading...</p>
+        ) : (
+          <div className="card-container">
+            {posts.map((post) => (
+              <div key={post.id} className="card">
+                <h3>{post.title}</h3>
+                <p>{post.body}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
