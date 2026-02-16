@@ -1,20 +1,47 @@
 const express = require("express");
 const cors = require("cors");
+const mongoose = require("mongoose");
+require("dotenv").config();
+
+const Post = require("./models/Post"); // Correct import
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
+// MongoDB Connection
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB Connected ✅"))
+  .catch((error) => console.error("MongoDB Connection Error ❌", error));
+
+// Test Route
 app.get("/", (req, res) => {
-  res.send("Backend running 🚀");
+  res.send("Server running with MongoDB 🚀");
 });
 
-app.get("/api/posts", (req, res) => {
-  res.json([
-    { id: 1, title: "Backend Ready", body: "Express is working" },
-    { id: 2, title: "Day-5 MERN", body: "React will connect next" }
-  ]);
+// 🔥 Create Post
+app.post("/api/posts", async (req, res) => {
+  try {
+    const { title, body } = req.body;
+
+    const newPost = new Post({ title, body });
+    await newPost.save();
+
+    res.status(201).json(newPost);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// 🔥 Get All Posts
+app.get("/api/posts", async (req, res) => {
+  try {
+    const posts = await Post.find();
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
 app.listen(5000, () => {
