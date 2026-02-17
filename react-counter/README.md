@@ -138,3 +138,25 @@ Express → Mongoose → MongoDB → Response
 
 Main Achievement:
 Real data stored in cloud database.
+........................................
+🚀 Day-7 Update – Full MERN Integration
+................................
+Completed full integration between:
+React Frontend
+Express Backend
+MongoDB Atlas
+................................
+Features Implemented:
+Fetch posts from MongoDB
+Display real database data
+Create new posts from frontend form
+Automatic UI refresh after submission
+....................................
+Tech Stack:
+React
+Node.js
+Express
+MongoDB Atlas
+Mongoose
+
+Full MERN data flow successfully implemented.
