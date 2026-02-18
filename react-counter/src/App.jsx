@@ -22,7 +22,7 @@ function App() {
     fetchPosts();
   }, []);
 
-  // Handle form submit
+  // CREATE Post
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -38,14 +38,22 @@ function App() {
 
     setTitle("");
     setBody("");
+    fetchPosts();
+  };
 
-    fetchPosts(); // Refresh posts
+  // DELETE Post
+  const handleDelete = async (id) => {
+    await fetch(`http://localhost:5000/api/posts/${id}`, {
+      method: "DELETE",
+    });
+
+    fetchPosts();
   };
 
   return (
     <div className="app">
       <div className="container">
-        <h1>Day-7 – MERN Full Integration 🚀</h1>
+        <h1>Day-8 – MERN CRUD 🚀</h1>
 
         {/* FORM */}
         <form onSubmit={handleSubmit} className="form">
@@ -72,12 +80,19 @@ function App() {
           <p>Loading...</p>
         ) : (
           <div className="card-container">
-            {posts.map((post) => (
-              <div key={post._id} className="card">
-                <h3>{post.title}</h3>
-                <p>{post.body}</p>
-              </div>
-            ))}
+            {posts.length === 0 ? (
+              <p>No posts available</p>
+            ) : (
+              posts.map((post) => (
+                <div key={post._id} className="card">
+                  <h3>{post.title}</h3>
+                  <p>{post.body}</p>
+                  <button onClick={() => handleDelete(post._id)}>
+                    Delete
+                  </button>
+                </div>
+              ))
+            )}
           </div>
         )}
       </div>
