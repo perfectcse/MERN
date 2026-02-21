@@ -95,3 +95,6 @@ body {
 .loading {
   color: #555;
 }
+.card button {
+  margin-right: 5px;
+}

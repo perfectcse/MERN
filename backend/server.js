@@ -33,6 +33,23 @@ app.post("/api/posts", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+// 🔥 Update Post
+app.put("/api/posts/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, body } = req.body;
+
+    const updatedPost = await Post.findByIdAndUpdate(
+      id,
+      { title, body },
+      { new: true }
+    );
+
+    res.json(updatedPost);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 // 🔥 Delete Post
 app.delete("/api/posts/:id", async (req, res) => {
   try {

@@ -5,57 +5,65 @@ function App() {
   const [posts, setPosts] = useState([]);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const [editId, setEditId] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch posts
   const fetchPosts = () => {
     fetch("http://localhost:5000/api/posts")
       .then((res) => res.json())
       .then((data) => {
         setPosts(data);
         setLoading(false);
-      })
-      .catch((err) => console.error(err));
+      });
   };
 
   useEffect(() => {
     fetchPosts();
   }, []);
 
-  // CREATE Post
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newPost = { title, body };
-
-    await fetch("http://localhost:5000/api/posts", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newPost),
-    });
+    if (editId) {
+      // UPDATE
+      await fetch(`http://localhost:5000/api/posts/${editId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, body }),
+      });
+      setEditId(null);
+    } else {
+      // CREATE
+      await fetch("http://localhost:5000/api/posts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, body }),
+      });
+    }
 
     setTitle("");
     setBody("");
     fetchPosts();
   };
 
-  // DELETE Post
   const handleDelete = async (id) => {
     await fetch(`http://localhost:5000/api/posts/${id}`, {
       method: "DELETE",
     });
-
     fetchPosts();
+  };
+
+  const handleEdit = (post) => {
+    setTitle(post.title);
+    setBody(post.body);
+    setEditId(post._id);
   };
 
   return (
     <div className="app">
       <div className="container">
-        <h1>Day-8 – MERN CRUD 🚀</h1>
+        <h1>Day-9 – Full MERN CRUD 🚀</h1>
 
-        {/* FORM */}
         <form onSubmit={handleSubmit} className="form">
           <input
             type="text"
@@ -72,27 +80,29 @@ function App() {
             required
           ></textarea>
 
-          <button type="submit">Add Post</button>
+          <button type="submit">
+            {editId ? "Update Post" : "Add Post"}
+          </button>
         </form>
 
-        {/* POSTS */}
         {loading ? (
           <p>Loading...</p>
         ) : (
           <div className="card-container">
-            {posts.length === 0 ? (
-              <p>No posts available</p>
-            ) : (
-              posts.map((post) => (
-                <div key={post._id} className="card">
-                  <h3>{post.title}</h3>
-                  <p>{post.body}</p>
-                  <button onClick={() => handleDelete(post._id)}>
-                    Delete
-                  </button>
-                </div>
-              ))
-            )}
+            {posts.map((post) => (
+              <div key={post._id} className="card">
+                <h3>{post.title}</h3>
+                <p>{post.body}</p>
+
+                <button onClick={() => handleEdit(post)}>
+                  Edit
+                </button>
+
+                <button onClick={() => handleDelete(post._id)}>
+                  Delete
+                </button>
+              </div>
+            ))}
           </div>
         )}
       </div>
