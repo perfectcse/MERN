@@ -8,11 +8,20 @@ function App() {
   const [editId, setEditId] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // ✅ FETCH POSTS (Updated for new backend response)
   const fetchPosts = () => {
     fetch("http://localhost:5000/api/posts")
       .then((res) => res.json())
       .then((data) => {
-        setPosts(data);
+        if (data.success) {
+          setPosts(data.data); // 🔥 IMPORTANT FIX
+        } else {
+          setPosts([]);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching posts:", err);
         setLoading(false);
       });
   };
@@ -21,38 +30,38 @@ function App() {
     fetchPosts();
   }, []);
 
+  // ✅ CREATE & UPDATE
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (editId) {
-      // UPDATE
-      await fetch(`http://localhost:5000/api/posts/${editId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, body }),
-      });
-      setEditId(null);
-    } else {
-      // CREATE
-      await fetch("http://localhost:5000/api/posts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, body }),
-      });
-    }
+    const method = editId ? "PUT" : "POST";
+    const url = editId
+      ? `http://localhost:5000/api/posts/${editId}`
+      : "http://localhost:5000/api/posts";
+
+    await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title, body }),
+    });
 
     setTitle("");
     setBody("");
+    setEditId(null);
+
     fetchPosts();
   };
 
+  // ✅ DELETE
   const handleDelete = async (id) => {
     await fetch(`http://localhost:5000/api/posts/${id}`, {
       method: "DELETE",
     });
+
     fetchPosts();
   };
 
+  // ✅ EDIT
   const handleEdit = (post) => {
     setTitle(post.title);
     setBody(post.body);
@@ -62,7 +71,7 @@ function App() {
   return (
     <div className="app">
       <div className="container">
-        <h1>Day-9 – Full MERN CRUD 🚀</h1>
+        <h1>Day-11 – Professional MERN API 🚀</h1>
 
         <form onSubmit={handleSubmit} className="form">
           <input
@@ -89,20 +98,24 @@ function App() {
           <p>Loading...</p>
         ) : (
           <div className="card-container">
-            {posts.map((post) => (
-              <div key={post._id} className="card">
-                <h3>{post.title}</h3>
-                <p>{post.body}</p>
+            {posts.length === 0 ? (
+              <p>No posts available</p>
+            ) : (
+              posts.map((post) => (
+                <div key={post._id} className="card">
+                  <h3>{post.title}</h3>
+                  <p>{post.body}</p>
 
-                <button onClick={() => handleEdit(post)}>
-                  Edit
-                </button>
+                  <button onClick={() => handleEdit(post)}>
+                    Edit
+                  </button>
 
-                <button onClick={() => handleDelete(post._id)}>
-                  Delete
-                </button>
-              </div>
-            ))}
+                  <button onClick={() => handleDelete(post._id)}>
+                    Delete
+                  </button>
+                </div>
+              ))
+            )}
           </div>
         )}
       </div>

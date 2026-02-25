@@ -3,11 +3,27 @@ const Post = require("../models/Post");
 // CREATE
 exports.createPost = async (req, res) => {
   try {
-    const newPost = new Post(req.body);
+    const { title, body } = req.body;
+
+    if (!title || !body) {
+      return res.status(400).json({
+        success: false,
+        message: "Title and body are required",
+      });
+    }
+
+    const newPost = new Post({ title, body });
     const savedPost = await newPost.save();
-    res.status(201).json(savedPost);
+
+    res.status(201).json({
+      success: true,
+      data: savedPost,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
@@ -15,32 +31,77 @@ exports.createPost = async (req, res) => {
 exports.getPosts = async (req, res) => {
   try {
     const posts = await Post.find();
-    res.json(posts);
+
+    res.status(200).json({
+      success: true,
+      count: posts.length,
+      data: posts,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
 // UPDATE
 exports.updatePost = async (req, res) => {
   try {
+    const { title, body } = req.body;
+
+    if (!title || !body) {
+      return res.status(400).json({
+        success: false,
+        message: "Title and body are required",
+      });
+    }
+
     const updated = await Post.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      { title, body },
       { new: true }
     );
-    res.json(updated);
+
+    if (!updated) {
+      return res.status(404).json({
+        success: false,
+        message: "Post not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: updated,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
 // DELETE
 exports.deletePost = async (req, res) => {
   try {
-    await Post.findByIdAndDelete(req.params.id);
-    res.json({ message: "Post deleted" });
+    const deleted = await Post.findByIdAndDelete(req.params.id);
+
+    if (!deleted) {
+      return res.status(404).json({
+        success: false,
+        message: "Post not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Post deleted successfully",
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
