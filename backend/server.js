@@ -3,10 +3,12 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
+const errorHandler = require("./middleware/errorMiddleware");
 const postRoutes = require("./routes/postRoutes");
 
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
@@ -19,13 +21,15 @@ mongoose
 // Routes
 app.use("/api/posts", postRoutes);
 
-// 404 Handler
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: "Route not found",
-  });
+// 404 Route Handler (for unknown routes)
+app.use((req, res, next) => {
+  const error = new Error("Route not found");
+  error.statusCode = 404;
+  next(error); // send to error middleware
 });
+
+// 🔥 Centralized Error Middleware (MUST BE LAST)
+app.use(errorHandler);
 
 // Start Server
 const PORT = 5000;
