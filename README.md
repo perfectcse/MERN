@@ -1,4 +1,4 @@
-# MERN Stack Challenge – Day 1 (9 Feb)
+# MERN Stack Challenge – Day 1 to 11
 
 ## Focus
 - JavaScript fundamentals
