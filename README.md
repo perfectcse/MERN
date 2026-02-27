@@ -237,5 +237,4 @@ Learned:
 
 Architecture Upgrade:
 Controller → asyncHandler → next(error) → errorMiddleware
-
 Backend now scalable & professional.
