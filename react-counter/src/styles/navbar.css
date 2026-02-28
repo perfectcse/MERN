@@ -1,0 +1,76 @@
+/* ================= NAVBAR WRAPPER ================= */
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 14px 25px;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  margin-bottom: 30px;
+}
+
+/* ================= LOGO / TITLE ================= */
+
+.navbar-logo {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e3c72;
+}
+
+/* ================= LINKS ================= */
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #444;
+  font-weight: 500;
+  font-size: 14px;
+  position: relative;
+  transition: 0.3s ease;
+}
+
+/* Hover underline effect */
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0%;
+  height: 2px;
+  background: #1e3c72;
+  transition: 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #1e3c72;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* ================= LOGOUT BUTTON ================= */
+
+.logout-btn {
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.logout-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(30, 60, 114, 0.35);
+}

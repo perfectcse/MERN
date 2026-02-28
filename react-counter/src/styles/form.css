@@ -1,0 +1,74 @@
+/* ================= FORM WRAPPER ================= */
+
+.post-form {
+  background: #ffffff;
+  padding: 35px;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.post-form:hover {
+  transform: translateY(-4px);
+}
+
+/* ================= TITLE ================= */
+
+.post-form h3 {
+  margin-bottom: 20px;
+  font-size: 20px;
+  color: #1e3c72;
+  font-weight: 600;
+}
+
+/* ================= INPUT FIELDS ================= */
+
+.post-form input,
+.post-form textarea {
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+  border-radius: 10px;
+  border: 1px solid #dcdcdc;
+  font-size: 14px;
+  transition: all 0.25s ease;
+  background: #f9fafc;
+}
+
+.post-form input:focus,
+.post-form textarea:focus {
+  outline: none;
+  border-color: #2a5298;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.15);
+}
+
+/* Textarea height */
+.post-form textarea {
+  min-height: 120px;
+  resize: none;
+}
+
+/* ================= BUTTON ================= */
+
+.post-form button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.post-form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(30, 60, 114, 0.35);
+}
+
+.post-form button:active {
+  transform: scale(0.98);
+}
