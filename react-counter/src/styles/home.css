@@ -1,113 +1,187 @@
-/* Home Page Wrapper */
+/* ================= CONTAINER ================= */
+
 .home-container {
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-  margin-top: 30px;
+  max-width: 1100px;
+  margin: 50px auto;
+  padding: 20px;
+  font-family: "Segoe UI", sans-serif;
 }
 
-/* Section Title */
+
+/* ================= SECTION TITLE ================= */
+
 .section-title {
+  margin-bottom: 20px;
   font-size: 22px;
   font-weight: 600;
-  color: #1e3c72;
-  margin-bottom: 15px;
+  color: #222;
 }
 
-/* ================= POST FORM ================= */
 
-.post-form {
-  background: white;
+/* ================= FORM SECTION ================= */
+
+.form-section {
+  background: #ffffff;
   padding: 30px;
   border-radius: 16px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+  margin-bottom: 50px;
   transition: 0.3s ease;
 }
 
-.post-form:hover {
-  transform: translateY(-3px);
+.form-section:hover {
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);
+}
+
+.post-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .post-form input,
 .post-form textarea {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
   font-size: 14px;
+  transition: 0.3s;
+  background: #fafafa;
+}
+
+.post-form input:focus,
+.post-form textarea:focus {
+  outline: none;
+  border-color: #4e73df;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.15);
 }
 
 .post-form textarea {
-  min-height: 100px;
+  min-height: 110px;
   resize: none;
 }
 
 .post-form button {
-  width: 100%;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 14px;
+  border-radius: 10px;
   border: none;
-  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  background: linear-gradient(135deg, #4e73df, #1cc88a);
   color: white;
   font-weight: 600;
   cursor: pointer;
   transition: 0.3s ease;
+  letter-spacing: 0.5px;
 }
 
 .post-form button:hover {
-  opacity: 0.9;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(78, 115, 223, 0.25);
 }
 
-/* ================= POSTS GRID ================= */
+
+/* ================= POSTS SECTION ================= */
+
+.posts-section {
+  margin-top: 20px;
+}
 
 .post-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 25px;
 }
 
-/* Post Card */
+
+/* ================= POST CARD ================= */
+
 .post-card {
-  background: white;
+  background: #ffffff;
   padding: 25px;
   border-radius: 16px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-  transition: 0.3s ease;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.07);
+  transition: all 0.3s ease;
+  position: relative;
 }
 
 .post-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
 }
 
 .post-card h4 {
-  color: #1e3c72;
   margin-bottom: 10px;
+  font-size: 18px;
+  color: #1e3c72;
 }
 
 .post-card p {
   font-size: 14px;
   color: #555;
-  line-height: 1.5;
+  margin-bottom: 18px;
+  line-height: 1.6;
 }
 
-/* Buttons inside card */
-.post-card button {
-  margin-top: 12px;
-  margin-right: 10px;
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  font-size: 13px;
+
+/* ================= BUTTONS ================= */
+
+.post-actions {
+  display: flex;
+  gap: 12px;
 }
 
 .edit-btn {
-  background: #ffa500;
-  color: white;
+  flex: 1;
+  background: #ffc107;
+  border: none;
+  padding: 9px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.3s ease;
+}
+
+.edit-btn:hover {
+  background: #e0a800;
+  transform: translateY(-2px);
 }
 
 .delete-btn {
-  background: #e63946;
+  flex: 1;
+  background: #e74a3b;
   color: white;
+  border: none;
+  padding: 9px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.3s ease;
+}
+
+.delete-btn:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
+}
+
+
+/* ================= EMPTY STATE ================= */
+
+.empty-text {
+  text-align: center;
+  color: #888;
+  font-size: 15px;
+  margin-top: 30px;
+}
+
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 600px) {
+  .home-container {
+    padding: 10px;
+  }
+
+  .form-section {
+    padding: 20px;
+  }
 }

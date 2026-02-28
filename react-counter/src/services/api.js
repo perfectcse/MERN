@@ -27,11 +27,12 @@ export const loginUser = async (email, password) => {
 
 /* ================= POSTS ================= */
 
-// 🔹 Get Posts
+// 🔹 Get Posts (Public)
 export const fetchPosts = async () => {
   const res = await fetch(`${BASE_URL}/posts`);
   return res.json();
 };
+
 
 // 🔹 Create Post (Protected)
 export const createPost = async (token, data) => {
@@ -42,6 +43,34 @@ export const createPost = async (token, data) => {
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(data),
+  });
+
+  return res.json();
+};
+
+
+// 🔹 Update Post (Protected)
+export const updatePost = async (token, id, data) => {
+  const res = await fetch(`${BASE_URL}/posts/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  return res.json();
+};
+
+
+// 🔹 Delete Post (Protected)
+export const deletePost = async (token, id) => {
+  const res = await fetch(`${BASE_URL}/posts/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 
   return res.json();
