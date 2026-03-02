@@ -7,14 +7,14 @@ import {
 } from "../services/api";
 import "../styles/home.css";
 
-function Home({ token }) {
+function Home({ token, role }) {
   const [posts, setPosts] = useState([]);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [editId, setEditId] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔹 Load posts on mount
+  // 🔹 Load posts
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -32,7 +32,7 @@ function Home({ token }) {
     fetchData();
   }, []);
 
-  // 🔹 Reload posts after changes
+  // 🔹 Reload
   const reloadPosts = async () => {
     try {
       const data = await fetchPosts();
@@ -71,13 +71,14 @@ function Home({ token }) {
 
   // 🔹 Delete
   const handleDelete = async (id) => {
-    if (!token) {
-      alert("Login first 🔐");
-      return;
-    }
-
     try {
-      await deletePost(token, id);
+      const response = await deletePost(token, id);
+
+      if (!response.success) {
+        alert(response.message);
+        return;
+      }
+
       await reloadPosts();
     } catch (error) {
       console.error("Delete error:", error);
@@ -95,7 +96,7 @@ function Home({ token }) {
   return (
     <div className="home-container">
 
-      {/* ================= FORM SECTION ================= */}
+      {/* ================= FORM ================= */}
       <div className="form-section">
         <h2 className="section-title">
           {editId ? "Update Post" : "Create New Post"}
@@ -123,7 +124,7 @@ function Home({ token }) {
         </form>
       </div>
 
-      {/* ================= POSTS SECTION ================= */}
+      {/* ================= POSTS ================= */}
       <div className="posts-section">
         <h2 className="section-title">All Posts</h2>
 
@@ -140,6 +141,8 @@ function Home({ token }) {
 
                 {token && (
                   <div className="post-actions">
+
+                    {/* Anyone logged in can Edit */}
                     <button
                       className="edit-btn"
                       onClick={() => handleEdit(post)}
@@ -147,14 +150,19 @@ function Home({ token }) {
                       Edit
                     </button>
 
-                    <button
-                      className="delete-btn"
-                      onClick={() => handleDelete(post._id)}
-                    >
-                      Delete
-                    </button>
+                    {/* 🔥 Only Admin can Delete */}
+                    {role === "admin" && (
+                      <button
+                        className="delete-btn"
+                        onClick={() => handleDelete(post._id)}
+                      >
+                        Delete
+                      </button>
+                    )}
+
                   </div>
                 )}
+
               </div>
             ))}
           </div>

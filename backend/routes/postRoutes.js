@@ -1,67 +1,72 @@
 const express = require("express");
-const jwt = require("jsonwebtoken");
 const Post = require("../models/Post");
+const { protect, adminOnly } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
 
-// 🔐 Auth Middleware
-const protect = (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
-
-  if (!token) {
-    return res.status(401).json({ success: false, message: "Not authorized" });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    return res.status(401).json({ success: false, message: "Invalid token" });
-  }
-};
-
-
-// 📌 GET ALL POSTS
+// 📌 GET ALL POSTS (Public)
 router.get("/", async (req, res) => {
-  const posts = await Post.find().sort({ createdAt: -1 });
-  res.json({ success: true, data: posts });
+  try {
+    const posts = await Post.find().sort({ createdAt: -1 });
+
+    res.json({ success: true, data: posts });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
 });
 
 
-// 📌 CREATE POST
+// 📌 CREATE POST (Protected)
 router.post("/", protect, async (req, res) => {
-  const { title, body } = req.body;
+  try {
+    const { title, body } = req.body;
 
-  const newPost = await Post.create({
-    title,
-    body,
-  });
+    const newPost = await Post.create({
+      title,
+      body,
+    });
 
-  res.json({ success: true, data: newPost });
+    res.json({ success: true, data: newPost });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
 });
 
 
-// ✏️ UPDATE POST
+// ✏️ UPDATE POST (Protected)
 router.put("/:id", protect, async (req, res) => {
-  const { title, body } = req.body;
+  try {
+    const { title, body } = req.body;
 
-  const updatedPost = await Post.findByIdAndUpdate(
-    req.params.id,
-    { title, body },
-    { new: true }
-  );
+    const updatedPost = await Post.findByIdAndUpdate(
+      req.params.id,
+      { title, body },
+      { new: true }
+    );
 
-  res.json({ success: true, data: updatedPost });
+    res.json({ success: true, data: updatedPost });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
 });
 
 
-// 🗑 DELETE POST
-router.delete("/:id", protect, async (req, res) => {
-  await Post.findByIdAndDelete(req.params.id);
+// 🗑 DELETE POST (ADMIN ONLY)
+router.delete("/:id", protect, adminOnly, async (req, res) => {
+  try {
+    await Post.findByIdAndDelete(req.params.id);
 
-  res.json({ success: true, message: "Post deleted" });
+    res.json({
+      success: true,
+      message: "Post deleted by admin",
+    });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
 });
 
 module.exports = router;

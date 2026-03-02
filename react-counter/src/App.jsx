@@ -13,21 +13,33 @@ function App() {
     localStorage.getItem("token") || null
   );
 
+  const [role, setRole] = useState(
+    localStorage.getItem("role") || null
+  );
+
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("role");
     setToken(null);
+    setRole(null);
   };
 
   return (
     <div className="app-container">
-      <Navbar token={token} onLogout={handleLogout} />
+
+      <Navbar token={token} role={role} onLogout={handleLogout} />
 
       <Routes>
+
         {/* 🔒 Protected Home Route */}
         <Route
           path="/"
           element={
-            token ? <Home token={token} /> : <Navigate to="/login" />
+            token ? (
+              <Home token={token} role={role} />
+            ) : (
+              <Navigate to="/login" />
+            )
           }
         />
 
@@ -38,7 +50,7 @@ function App() {
             token ? (
               <Navigate to="/" />
             ) : (
-              <Login setToken={setToken} />
+              <Login setToken={setToken} setRole={setRole} />
             )
           }
         />
@@ -50,6 +62,7 @@ function App() {
             token ? <Navigate to="/" /> : <Register />
           }
         />
+
       </Routes>
     </div>
   );

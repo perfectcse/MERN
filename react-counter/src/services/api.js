@@ -4,24 +4,33 @@ const BASE_URL = "http://localhost:5000/api";
 
 // 🔹 Register
 export const registerUser = async (email, password) => {
-  const res = await fetch(`${BASE_URL}/auth/register`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
+  try {
+    const res = await fetch(`${BASE_URL}/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
 
-  return res.json();
+    return await res.json();
+  } catch {
+    return { success: false, message: "Server error" };
+  }
 };
+
 
 // 🔹 Login
 export const loginUser = async (email, password) => {
-  const res = await fetch(`${BASE_URL}/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
+  try {
+    const res = await fetch(`${BASE_URL}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
 
-  return res.json();
+    return await res.json();
+  } catch {
+    return { success: false, message: "Server error" };
+  }
 };
 
 
@@ -29,49 +38,65 @@ export const loginUser = async (email, password) => {
 
 // 🔹 Get Posts (Public)
 export const fetchPosts = async () => {
-  const res = await fetch(`${BASE_URL}/posts`);
-  return res.json();
+  try {
+    const res = await fetch(`${BASE_URL}/posts`);
+    return await res.json();
+  } catch {
+    return { success: false, message: "Failed to fetch posts" };
+  }
 };
 
 
 // 🔹 Create Post (Protected)
 export const createPost = async (token, data) => {
-  const res = await fetch(`${BASE_URL}/posts`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-  });
+  try {
+    const res = await fetch(`${BASE_URL}/posts`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
 
-  return res.json();
+    return await res.json();
+  } catch {
+    return { success: false, message: "Failed to create post" };
+  }
 };
 
 
 // 🔹 Update Post (Protected)
 export const updatePost = async (token, id, data) => {
-  const res = await fetch(`${BASE_URL}/posts/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-  });
+  try {
+    const res = await fetch(`${BASE_URL}/posts/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
 
-  return res.json();
+    return await res.json();
+  } catch {
+    return { success: false, message: "Failed to update post" };
+  }
 };
 
 
-// 🔹 Delete Post (Protected)
+// 🔹 Delete Post (Protected - Admin Only)
 export const deletePost = async (token, id) => {
-  const res = await fetch(`${BASE_URL}/posts/${id}`, {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  try {
+    const res = await fetch(`${BASE_URL}/posts/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-  return res.json();
+    return await res.json();
+  } catch {
+    return { success: false, message: "Failed to delete post" };
+  }
 };

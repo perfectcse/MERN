@@ -2,7 +2,7 @@ import { useState } from "react";
 import { loginUser } from "../services/api";
 import "../styles/login.css";
 
-function Login({ setToken }) {
+function Login({ setToken, setRole }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -12,8 +12,13 @@ function Login({ setToken }) {
     const data = await loginUser(email, password);
 
     if (data.success) {
+      // 🔐 Store token + role
       localStorage.setItem("token", data.token);
+      localStorage.setItem("role", data.role);
+
+      // Update App state
       setToken(data.token);
+      setRole(data.role);
     } else {
       alert(data.message || "Invalid credentials ❌");
     }

@@ -1,16 +1,17 @@
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/navbar.css";
 
-function Navbar({ token, onLogout }) {
+function Navbar({ token, role, onLogout }) {
   const navigate = useNavigate();
 
   const handleLogoutClick = () => {
     onLogout();
-    navigate("/login"); // Redirect after logout
+    navigate("/login");
   };
 
   return (
     <nav className="navbar">
+
       {/* 🔹 Logo */}
       <div className="navbar-logo">
         <Link to="/">MERN + JWT</Link>
@@ -18,6 +19,7 @@ function Navbar({ token, onLogout }) {
 
       {/* 🔹 Navigation Links */}
       <div className="nav-links">
+
         <Link to="/">Home</Link>
 
         {!token ? (
@@ -26,10 +28,21 @@ function Navbar({ token, onLogout }) {
             <Link to="/register">Register</Link>
           </>
         ) : (
-          <button className="logout-btn" onClick={handleLogoutClick}>
-            Logout
-          </button>
+          <>
+            {/* 🔥 Show Role Badge */}
+            <span className="role-badge">
+              {role === "admin" ? "Admin 👑" : "User 👤"}
+            </span>
+
+            <button
+              className="logout-btn"
+              onClick={handleLogoutClick}
+            >
+              Logout
+            </button>
+          </>
         )}
+
       </div>
     </nav>
   );

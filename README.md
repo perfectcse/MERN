@@ -1,4 +1,4 @@
-# MERN Stack Challenge – Day 1 to 13
+# MERN Stack Challenge – Day 1 to 14
 
 ## Focus
 - JavaScript fundamentals
@@ -297,3 +297,19 @@ Answer this in your own words:
 * What happens when token expires?
 * How does middleware protect routes?
 * What is the difference between login and register flow?
+
+* Today I implemented:
+* Role field in User model
+* JWT payload customization
+* Protect middleware
+* Admin-only middleware
+* 401 vs 403 handling
+* Frontend role-based rendering
+* Secure delete endpoint
+.....................
+* Key Learnings:
+* Authentication vs Authorization
+* Middleware chaining
+* JWT role embedding
+* Backend security layering
+* Role-based UI rendering

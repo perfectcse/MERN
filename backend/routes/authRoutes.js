@@ -29,9 +29,10 @@ router.post("/register", async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await User.create({
+    const newUser = await User.create({
       email,
       password: hashedPassword,
+      role: "user", // default role
     });
 
     res.status(201).json({
@@ -71,8 +72,9 @@ router.post("/login", async (req, res) => {
       });
     }
 
+    // 🔥 INCLUDE ROLE IN JWT
     const token = jwt.sign(
-      { id: user._id },
+      { id: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
@@ -80,6 +82,7 @@ router.post("/login", async (req, res) => {
     res.json({
       success: true,
       token,
+      role: user.role, // send role to frontend
     });
 
   } catch (error) {
