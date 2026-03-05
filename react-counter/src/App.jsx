@@ -6,16 +6,25 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Navbar from "./components/Navbar";
 
+import { isTokenExpired } from "./utils/auth";
+
 import "./styles/global.css";
 
 function App() {
-  const [token, setToken] = useState(
-    localStorage.getItem("token") || null
-  );
 
-  const [role, setRole] = useState(
-    localStorage.getItem("role") || null
-  );
+  const storedToken = localStorage.getItem("token");
+  const storedRole = localStorage.getItem("role");
+
+  const validToken =
+    storedToken && !isTokenExpired(storedToken) ? storedToken : null;
+
+  if (storedToken && isTokenExpired(storedToken)) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+  }
+
+  const [token, setToken] = useState(validToken);
+  const [role, setRole] = useState(storedRole);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -31,7 +40,7 @@ function App() {
 
       <Routes>
 
-        {/* 🔒 Protected Home Route */}
+        {/* Protected Home */}
         <Route
           path="/"
           element={
@@ -43,7 +52,7 @@ function App() {
           }
         />
 
-        {/* 🔐 Login */}
+        {/* Login */}
         <Route
           path="/login"
           element={
@@ -55,7 +64,7 @@ function App() {
           }
         />
 
-        {/* 📝 Register */}
+        {/* Register */}
         <Route
           path="/register"
           element={
@@ -64,6 +73,7 @@ function App() {
         />
 
       </Routes>
+
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { loginUser } from "../services/api";
 import "../styles/login.css";
 
 function Login({ setToken, setRole }) {
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -12,11 +13,9 @@ function Login({ setToken, setRole }) {
     const data = await loginUser(email, password);
 
     if (data.success) {
-      // 🔐 Store token + role
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.role);
 
-      // Update App state
       setToken(data.token);
       setRole(data.role);
     } else {
@@ -27,10 +26,12 @@ function Login({ setToken, setRole }) {
   return (
     <div className="login-wrapper">
       <div className="login-card">
+
         <h2>Welcome Back 👋</h2>
         <p className="login-subtitle">Login to continue</p>
 
         <form onSubmit={handleSubmit}>
+
           <input
             type="email"
             placeholder="Enter email"
@@ -48,7 +49,9 @@ function Login({ setToken, setRole }) {
           />
 
           <button type="submit">Login</button>
+
         </form>
+
       </div>
     </div>
   );

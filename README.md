@@ -1,4 +1,4 @@
-# MERN Stack Challenge – Day 1 to 14
+# MERN Stack Challenge – Day 1 to 15
 
 ## Focus
 - JavaScript fundamentals
@@ -313,3 +313,11 @@ Answer this in your own words:
 * JWT role embedding
 * Backend security layering
 * Role-based UI rendering
+
+Day-15 Coding Summary
+NEW
+src/utils/auth.js
+
+MODIFIED
+src/App.jsx
+src/pages/Login.jsx
