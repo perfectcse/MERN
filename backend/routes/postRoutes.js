@@ -1,6 +1,8 @@
 const express = require("express");
 const Post = require("../models/Post");
+
 const { protect, adminOnly } = require("../middleware/authMiddleware");
+const { validatePost } = require("../middleware/validationMiddleware");
 
 const router = express.Router();
 
@@ -10,33 +12,46 @@ router.get("/", async (req, res) => {
   try {
     const posts = await Post.find().sort({ createdAt: -1 });
 
-    res.json({ success: true, data: posts });
+    res.json({
+      success: true,
+      data: posts
+    });
+
   } catch (error) {
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
   }
 });
 
 
-// 📌 CREATE POST (Protected)
-router.post("/", protect, async (req, res) => {
+// 📌 CREATE POST (Protected + Validation)
+router.post("/", protect, validatePost, async (req, res) => {
   try {
     const { title, body } = req.body;
 
     const newPost = await Post.create({
       title,
-      body,
+      body
     });
 
-    res.json({ success: true, data: newPost });
+    res.json({
+      success: true,
+      data: newPost
+    });
 
   } catch (error) {
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
   }
 });
 
 
-// ✏️ UPDATE POST (Protected)
-router.put("/:id", protect, async (req, res) => {
+// ✏️ UPDATE POST (Protected + Validation)
+router.put("/:id", protect, validatePost, async (req, res) => {
   try {
     const { title, body } = req.body;
 
@@ -46,10 +61,16 @@ router.put("/:id", protect, async (req, res) => {
       { new: true }
     );
 
-    res.json({ success: true, data: updatedPost });
+    res.json({
+      success: true,
+      data: updatedPost
+    });
 
   } catch (error) {
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
   }
 });
 
@@ -61,12 +82,16 @@ router.delete("/:id", protect, adminOnly, async (req, res) => {
 
     res.json({
       success: true,
-      message: "Post deleted by admin",
+      message: "Post deleted by admin"
     });
 
   } catch (error) {
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
   }
 });
+
 
 module.exports = router;
