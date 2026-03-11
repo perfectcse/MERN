@@ -1,4 +1,4 @@
-# MERN Stack Challenge – Day 1 to 15
+# MERN Stack Challenge – Day 1 to 16
 
 ## Focus
 - JavaScript fundamentals
@@ -321,3 +321,8 @@ src/utils/auth.js
 MODIFIED
 src/App.jsx
 src/pages/Login.jsx
+
+🔥 Day-16 Completed
+Added Validation Middleware to my MERN backend.
+Now the API verifies request data before saving it to the database.
+Learning clean backend architecture step by step 🚀
