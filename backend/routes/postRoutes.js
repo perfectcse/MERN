@@ -8,8 +8,9 @@ const router = express.Router();
 
 
 // 📌 GET ALL POSTS (Public)
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   try {
+
     const posts = await Post.find().sort({ createdAt: -1 });
 
     res.json({
@@ -18,17 +19,15 @@ router.get("/", async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server error"
-    });
+    next(error);
   }
 });
 
 
 // 📌 CREATE POST (Protected + Validation)
-router.post("/", protect, validatePost, async (req, res) => {
+router.post("/", protect, validatePost, async (req, res, next) => {
   try {
+
     const { title, body } = req.body;
 
     const newPost = await Post.create({
@@ -42,17 +41,15 @@ router.post("/", protect, validatePost, async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server error"
-    });
+    next(error);
   }
 });
 
 
 // ✏️ UPDATE POST (Protected + Validation)
-router.put("/:id", protect, validatePost, async (req, res) => {
+router.put("/:id", protect, validatePost, async (req, res, next) => {
   try {
+
     const { title, body } = req.body;
 
     const updatedPost = await Post.findByIdAndUpdate(
@@ -67,17 +64,15 @@ router.put("/:id", protect, validatePost, async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server error"
-    });
+    next(error);
   }
 });
 
 
 // 🗑 DELETE POST (ADMIN ONLY)
-router.delete("/:id", protect, adminOnly, async (req, res) => {
+router.delete("/:id", protect, adminOnly, async (req, res, next) => {
   try {
+
     await Post.findByIdAndDelete(req.params.id);
 
     res.json({
@@ -86,10 +81,7 @@ router.delete("/:id", protect, adminOnly, async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server error"
-    });
+    next(error);
   }
 });
 

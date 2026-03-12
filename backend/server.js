@@ -5,11 +5,13 @@ require("dotenv").config();
 
 const postRoutes = require("./routes/postRoutes");
 const authRoutes = require("./routes/authRoutes");
+const errorHandler = require("./middleware/errorMiddleware");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
 
 // MongoDB Connection
 mongoose
@@ -17,9 +19,15 @@ mongoose
   .then(() => console.log("MongoDB Connected ✅"))
   .catch((err) => console.error("MongoDB Error ❌", err));
 
+
 // Routes
 app.use("/api/posts", postRoutes);
 app.use("/api/auth", authRoutes);
+
+
+// Global Error Middleware (must be last)
+app.use(errorHandler);
+
 
 // Start Server
 app.listen(5000, () => {

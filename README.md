@@ -1,4 +1,4 @@
-# MERN Stack Challenge – Day 1 to 16
+# MERN Stack Challenge – Day 1 to 17
 
 ## Focus
 - JavaScript fundamentals
@@ -326,3 +326,22 @@ src/pages/Login.jsx
 Added Validation Middleware to my MERN backend.
 Now the API verifies request data before saving it to the database.
 Learning clean backend architecture step by step 🚀
+
+Day-17
+Global Error Handling Middleware
+
+Purpose:
+Centralize API error handling.
+
+Error flow:
+Route → next(error) → errorMiddleware → response
+
+Example:
+catch(error){
+ next(error)
+}
+
+Middleware signature:
+(err, req, res, next)
+
+Must be last in server.js
