@@ -1,4 +1,4 @@
-# MERN Stack Challenge – Day 1 to 17
+# MERN Stack Challenge – Day 1 to 18
 
 ## Focus
 - JavaScript fundamentals
@@ -345,3 +345,18 @@ Middleware signature:
 (err, req, res, next)
 
 Must be last in server.js
+
+Day-18
+
+Pagination in API
+
+GET /api/posts?page=1&limit=5
+
+page → current page
+limit → items per page
+
+skip = (page-1) * limit
+
+MongoDB:
+.skip()
+.limit()

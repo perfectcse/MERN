@@ -7,14 +7,32 @@ const { validatePost } = require("../middleware/validationMiddleware");
 const router = express.Router();
 
 
-// 📌 GET ALL POSTS (Public)
+// 📌 GET POSTS WITH PAGINATION (Public)
 router.get("/", async (req, res, next) => {
   try {
 
-    const posts = await Post.find().sort({ createdAt: -1 });
+    // Query parameters
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+
+    // Calculate skip value
+    const skip = (page - 1) * limit;
+
+    // Fetch paginated posts
+    const posts = await Post.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    // Count total posts
+    const totalPosts = await Post.countDocuments();
 
     res.json({
       success: true,
+      page,
+      limit,
+      totalPosts,
+      totalPages: Math.ceil(totalPosts / limit),
       data: posts
     });
 
