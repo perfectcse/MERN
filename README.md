@@ -1,4 +1,4 @@
-# MERN Stack Challenge – Day 1 to 18
+# MERN Stack Challenge – Day 1 to 19
 
 ## Focus
 - JavaScript fundamentals
@@ -360,3 +360,16 @@ skip = (page-1) * limit
 MongoDB:
 .skip()
 .limit()
+
+Day-19
+
+Search + Filtering API
+
+GET /api/posts?search=react
+
+MongoDB search:
+$regex
+$options: "i"
+
+Combine with pagination
+?page=1&limit=5
