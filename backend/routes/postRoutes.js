@@ -7,27 +7,39 @@ const { validatePost } = require("../middleware/validationMiddleware");
 const router = express.Router();
 
 
-// 📌 GET POSTS WITH SEARCH + PAGINATION (Public)
+// 📌 GET POSTS WITH SEARCH + PAGINATION + SORTING (Public)
 
 router.get("/", async (req, res, next) => {
-
   try {
-
     // Query parameters
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
     const search = req.query.search || "";
+    const sort = req.query.sort || "latest";
 
     const skip = (page - 1) * limit;
 
-    // Search filter
+    // 🔎 Search filter
     const filter = {
       title: { $regex: search, $options: "i" }
     };
 
+    // 🔽 Sorting logic
+    let sortOption = {};
+
+    if (sort === "latest") {
+      sortOption = { createdAt: -1 };
+    } else if (sort === "oldest") {
+      sortOption = { createdAt: 1 };
+    } else if (sort === "title") {
+      sortOption = { title: 1 };
+    } else {
+      sortOption = { createdAt: -1 }; // default
+    }
+
     // Fetch posts
     const posts = await Post.find(filter)
-      .sort({ createdAt: -1 })
+      .sort(sortOption)
       .skip(skip)
       .limit(limit);
 
@@ -39,6 +51,7 @@ router.get("/", async (req, res, next) => {
       page,
       limit,
       search,
+      sort,
       totalPosts,
       totalPages: Math.ceil(totalPosts / limit),
       data: posts
@@ -47,16 +60,13 @@ router.get("/", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-
 });
 
 
 // 📌 CREATE POST (Protected + Validation)
 
 router.post("/", protect, validatePost, async (req, res, next) => {
-
   try {
-
     const { title, body } = req.body;
 
     const newPost = await Post.create({
@@ -72,16 +82,13 @@ router.post("/", protect, validatePost, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-
 });
 
 
 // ✏️ UPDATE POST (Protected + Validation)
 
 router.put("/:id", protect, validatePost, async (req, res, next) => {
-
   try {
-
     const { title, body } = req.body;
 
     const updatedPost = await Post.findByIdAndUpdate(
@@ -98,16 +105,13 @@ router.put("/:id", protect, validatePost, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-
 });
 
 
 // 🗑 DELETE POST (ADMIN ONLY)
 
 router.delete("/:id", protect, adminOnly, async (req, res, next) => {
-
   try {
-
     await Post.findByIdAndDelete(req.params.id);
 
     res.json({
@@ -118,7 +122,7 @@ router.delete("/:id", protect, adminOnly, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-
 });
+
 
 module.exports = router;
