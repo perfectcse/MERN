@@ -1,4 +1,4 @@
-# MERN Stack Challenge – Day 1 to 20
+# MERN Stack Challenge – Day 1 to 21
 
 ## Focus
 - JavaScript fundamentals
@@ -373,3 +373,31 @@ $options: "i"
 
 Combine with pagination
 ?page=1&limit=5
+
+Day-20
+
+Sorting API
+
+req.query.sort
+
+MongoDB:
+.sort()
+
+latest → createdAt: -1
+oldest → createdAt: 1
+title → title: 1
+
+Combine:
+search + pagination + sorting
+
+Day-21
+Advanced Filtering
+
+MongoDB:
+$or
+
+Search multiple fields:
+title + body
+
+Combine:
+search + sort + pagination

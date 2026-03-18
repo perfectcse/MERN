@@ -7,7 +7,7 @@ const { validatePost } = require("../middleware/validationMiddleware");
 const router = express.Router();
 
 
-// 📌 GET POSTS WITH SEARCH + PAGINATION + SORTING (Public)
+// 📌 GET POSTS WITH ADVANCED FILTERING + SEARCH + SORT + PAGINATION
 
 router.get("/", async (req, res, next) => {
   try {
@@ -19,9 +19,12 @@ router.get("/", async (req, res, next) => {
 
     const skip = (page - 1) * limit;
 
-    // 🔎 Search filter
+    // 🔎 Advanced Search (title + body)
     const filter = {
-      title: { $regex: search, $options: "i" }
+      $or: [
+        { title: { $regex: search, $options: "i" } },
+        { body: { $regex: search, $options: "i" } }
+      ]
     };
 
     // 🔽 Sorting logic
