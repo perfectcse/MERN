@@ -1,4 +1,4 @@
-# MERN Stack Challenge – Day 1 to 21
+# MERN Stack Challenge – Day 1 to 22
 
 ## Focus
 - JavaScript fundamentals
@@ -401,3 +401,17 @@ title + body
 
 Combine:
 search + sort + pagination
+
+Day-22
+
+Date Filtering
+
+MongoDB:
+$gte
+$lte
+
+Filter:
+createdAt
+
+Combine:
+search + sort + pagination + date

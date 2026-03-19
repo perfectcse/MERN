@@ -7,7 +7,7 @@ const { validatePost } = require("../middleware/validationMiddleware");
 const router = express.Router();
 
 
-// 📌 GET POSTS WITH ADVANCED FILTERING + SEARCH + SORT + PAGINATION
+// 📌 GET POSTS WITH SEARCH + SORT + PAGINATION + DATE FILTER
 
 router.get("/", async (req, res, next) => {
   try {
@@ -16,18 +16,28 @@ router.get("/", async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 5;
     const search = req.query.search || "";
     const sort = req.query.sort || "latest";
+    const startDate = req.query.startDate;
+    const endDate = req.query.endDate;
 
     const skip = (page - 1) * limit;
 
-    // 🔎 Advanced Search (title + body)
-    const filter = {
+    // 🔎 Base filter (multi-field search)
+    let filter = {
       $or: [
         { title: { $regex: search, $options: "i" } },
         { body: { $regex: search, $options: "i" } }
       ]
     };
 
-    // 🔽 Sorting logic
+    // 📅 Date filtering
+    if (startDate && endDate) {
+      filter.createdAt = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate)
+      };
+    }
+
+    // 🔽 Sorting
     let sortOption = {};
 
     if (sort === "latest") {
@@ -37,7 +47,7 @@ router.get("/", async (req, res, next) => {
     } else if (sort === "title") {
       sortOption = { title: 1 };
     } else {
-      sortOption = { createdAt: -1 }; // default
+      sortOption = { createdAt: -1 };
     }
 
     // Fetch posts
@@ -55,6 +65,8 @@ router.get("/", async (req, res, next) => {
       limit,
       search,
       sort,
+      startDate,
+      endDate,
       totalPosts,
       totalPages: Math.ceil(totalPosts / limit),
       data: posts
@@ -66,7 +78,7 @@ router.get("/", async (req, res, next) => {
 });
 
 
-// 📌 CREATE POST (Protected + Validation)
+// 📌 CREATE POST
 
 router.post("/", protect, validatePost, async (req, res, next) => {
   try {
@@ -88,7 +100,7 @@ router.post("/", protect, validatePost, async (req, res, next) => {
 });
 
 
-// ✏️ UPDATE POST (Protected + Validation)
+// ✏️ UPDATE POST
 
 router.put("/:id", protect, validatePost, async (req, res, next) => {
   try {
@@ -111,7 +123,7 @@ router.put("/:id", protect, validatePost, async (req, res, next) => {
 });
 
 
-// 🗑 DELETE POST (ADMIN ONLY)
+// 🗑 DELETE POST
 
 router.delete("/:id", protect, adminOnly, async (req, res, next) => {
   try {
@@ -126,6 +138,5 @@ router.delete("/:id", protect, adminOnly, async (req, res, next) => {
     next(error);
   }
 });
-
 
 module.exports = router;
