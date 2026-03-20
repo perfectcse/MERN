@@ -24,7 +24,7 @@ Validation Middleware
 Global Error Handling
 
 
-📅 Progress (Day-1 → Day-17)
+📅 Progress (Day-1 → Day-23)
 Day-1
 Introduction to MERN challenge.
 Project setup and basic React environment.
@@ -160,6 +160,14 @@ createdAt
 
 Combine:
 search + sort + pagination + date
+
+Day-23:
+- Learned API query params (search, sort)
+- Connected frontend filters with backend
+- useEffect dependency concept
+- MongoDB regex search
+- Sorting using .sort()
+- Built real-time dynamic UI
 
 ⚙️ Backend Architecture
 backend

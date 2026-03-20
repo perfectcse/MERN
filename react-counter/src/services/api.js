@@ -17,7 +17,6 @@ export const registerUser = async (email, password) => {
   }
 };
 
-
 // 🔹 Login
 export const loginUser = async (email, password) => {
   try {
@@ -33,21 +32,27 @@ export const loginUser = async (email, password) => {
   }
 };
 
-
 /* ================= POSTS ================= */
 
-// 🔹 Get Posts (Public)
-export const fetchPosts = async () => {
+// 🔥 UPDATED (Search + Sort + Pagination)
+export const fetchPosts = async ({
+  page = 1,
+  limit = 5,
+  search = "",
+  sort = "latest",
+} = {}) => {
   try {
-    const res = await fetch(`${BASE_URL}/posts`);
+    const res = await fetch(
+      `${BASE_URL}/posts?page=${page}&limit=${limit}&search=${search}&sort=${sort}`
+    );
+
     return await res.json();
   } catch {
     return { success: false, message: "Failed to fetch posts" };
   }
 };
 
-
-// 🔹 Create Post (Protected)
+// 🔹 Create Post
 export const createPost = async (token, data) => {
   try {
     const res = await fetch(`${BASE_URL}/posts`, {
@@ -65,8 +70,7 @@ export const createPost = async (token, data) => {
   }
 };
 
-
-// 🔹 Update Post (Protected)
+// 🔹 Update Post
 export const updatePost = async (token, id, data) => {
   try {
     const res = await fetch(`${BASE_URL}/posts/${id}`, {
@@ -84,8 +88,7 @@ export const updatePost = async (token, id, data) => {
   }
 };
 
-
-// 🔹 Delete Post (Protected - Admin Only)
+// 🔹 Delete Post
 export const deletePost = async (token, id) => {
   try {
     const res = await fetch(`${BASE_URL}/posts/${id}`, {

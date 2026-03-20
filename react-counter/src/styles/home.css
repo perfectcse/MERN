@@ -185,3 +185,55 @@
     padding: 20px;
   }
 }
+/* ================= FILTERS ================= */
+
+.filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.filters input {
+  flex: 1;
+  min-width: 220px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  background: #f9f9f9;
+  transition: 0.3s;
+}
+
+.filters input:focus {
+  outline: none;
+  border-color: #4e73df;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.15);
+}
+
+.filters select {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  background: #f9f9f9;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.filters select:hover {
+  background: #fff;
+}
+/* Smooth UI feel */
+* {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Better button click effect */
+button:active {
+  transform: scale(0.97);
+}
+
+/* Card border glow */
+.post-card:hover {
+  border: 1px solid rgba(78, 115, 223, 0.2);
+}

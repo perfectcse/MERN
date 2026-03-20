@@ -1,4 +1,4 @@
-# MERN Stack Challenge – Day 1 to 22
+# MERN Stack Challenge – Day 1 to 23
 
 ## Focus
 - JavaScript fundamentals
@@ -415,3 +415,11 @@ createdAt
 
 Combine:
 search + sort + pagination + date
+
+Day-23:
+- Learned API query params (search, sort)
+- Connected frontend filters with backend
+- useEffect dependency concept
+- MongoDB regex search
+- Sorting using .sort()
+- Built real-time dynamic UI
