@@ -5,6 +5,7 @@ import {
   updatePost,
   deletePost,
 } from "../services/api";
+
 import "../styles/home.css";
 
 function Home({ token, role }) {
@@ -14,13 +15,22 @@ function Home({ token, role }) {
   const [editId, setEditId] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔹 Load posts
+  // Pagination + Filters
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("latest");
+
+  // 🔹 Load posts (inside useEffect to avoid warning)
   useEffect(() => {
-    const fetchData = async () => {
+    const loadPosts = async () => {
+      setLoading(true);
       try {
-        const data = await fetchPosts();
+        const data = await fetchPosts({ page, search, sort });
+
         if (data.success) {
           setPosts(data.data);
+          setTotalPages(data.totalPages);
         }
       } catch (error) {
         console.error("Error loading posts:", error);
@@ -29,18 +39,15 @@ function Home({ token, role }) {
       }
     };
 
-    fetchData();
-  }, []);
+    loadPosts();
+  }, [page, search, sort]);
 
-  // 🔹 Reload
+  // 🔹 Reload posts after create/update/delete
   const reloadPosts = async () => {
-    try {
-      const data = await fetchPosts();
-      if (data.success) {
-        setPosts(data.data);
-      }
-    } catch (error) {
-      console.error("Reload error:", error);
+    const data = await fetchPosts({ page, search, sort });
+    if (data.success) {
+      setPosts(data.data);
+      setTotalPages(data.totalPages);
     }
   };
 
@@ -63,7 +70,7 @@ function Home({ token, role }) {
 
       setTitle("");
       setBody("");
-      await reloadPosts();
+      reloadPosts();
     } catch (error) {
       console.error("Submit error:", error);
     }
@@ -79,7 +86,7 @@ function Home({ token, role }) {
         return;
       }
 
-      await reloadPosts();
+      reloadPosts();
     } catch (error) {
       console.error("Delete error:", error);
     }
@@ -96,7 +103,32 @@ function Home({ token, role }) {
   return (
     <div className="home-container">
 
-      {/* ================= FORM ================= */}
+      {/* SEARCH + SORT */}
+      <div className="filters">
+        <input
+          type="text"
+          placeholder="Search posts..."
+          value={search}
+          onChange={(e) => {
+            setPage(1);
+            setSearch(e.target.value);
+          }}
+        />
+
+        <select
+          value={sort}
+          onChange={(e) => {
+            setPage(1);
+            setSort(e.target.value);
+          }}
+        >
+          <option value="latest">Latest</option>
+          <option value="oldest">Oldest</option>
+          <option value="title">Title</option>
+        </select>
+      </div>
+
+      {/* FORM */}
       <div className="form-section">
         <h2 className="section-title">
           {editId ? "Update Post" : "Create New Post"}
@@ -116,7 +148,7 @@ function Home({ token, role }) {
             value={body}
             onChange={(e) => setBody(e.target.value)}
             required
-          />
+          ></textarea>
 
           <button type="submit">
             {editId ? "Update Post" : "Add Post"}
@@ -124,7 +156,7 @@ function Home({ token, role }) {
         </form>
       </div>
 
-      {/* ================= POSTS ================= */}
+      {/* POSTS */}
       <div className="posts-section">
         <h2 className="section-title">All Posts</h2>
 
@@ -133,39 +165,57 @@ function Home({ token, role }) {
         ) : posts.length === 0 ? (
           <p className="empty-text">No posts available</p>
         ) : (
-          <div className="post-list">
-            {posts.map((post) => (
-              <div key={post._id} className="post-card">
-                <h4>{post.title}</h4>
-                <p>{post.body}</p>
+          <>
+            <div className="post-list">
+              {posts.map((post) => (
+                <div key={post._id} className="post-card">
+                  <h4>{post.title}</h4>
+                  <p>{post.body}</p>
 
-                {token && (
-                  <div className="post-actions">
-
-                    {/* Anyone logged in can Edit */}
-                    <button
-                      className="edit-btn"
-                      onClick={() => handleEdit(post)}
-                    >
-                      Edit
-                    </button>
-
-                    {/* 🔥 Only Admin can Delete */}
-                    {role === "admin" && (
+                  {token && (
+                    <div className="post-actions">
                       <button
-                        className="delete-btn"
-                        onClick={() => handleDelete(post._id)}
+                        className="edit-btn"
+                        onClick={() => handleEdit(post)}
                       >
-                        Delete
+                        Edit
                       </button>
-                    )}
 
-                  </div>
-                )}
+                      {role === "admin" && (
+                        <button
+                          className="delete-btn"
+                          onClick={() => handleDelete(post._id)}
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
 
-              </div>
-            ))}
-          </div>
+            {/* PAGINATION */}
+            <div className="pagination">
+              <button
+                onClick={() => setPage(page - 1)}
+                disabled={page === 1}
+              >
+                Previous
+              </button>
+
+              <span>
+                Page {page} of {totalPages}
+              </span>
+
+              <button
+                onClick={() => setPage(page + 1)}
+                disabled={page === totalPages}
+              >
+                Next
+              </button>
+            </div>
+          </>
         )}
       </div>
     </div>

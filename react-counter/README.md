@@ -24,7 +24,7 @@ Validation Middleware
 Global Error Handling
 
 
-📅 Progress (Day-1 → Day-23)
+📅 Progress (Day-1 → Day-24)
 Day-1
 Introduction to MERN challenge.
 Project setup and basic React environment.
@@ -168,6 +168,13 @@ Day-23:
 - MongoDB regex search
 - Sorting using .sort()
 - Built real-time dynamic UI
+
+Day-24:
+- Implemented frontend pagination
+- Managed page state in React
+- Connected page with API query params
+- Added Previous and Next buttons
+- Learned pagination flow frontend → backend → database
 
 ⚙️ Backend Architecture
 backend

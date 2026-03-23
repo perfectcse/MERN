@@ -1,105 +1,51 @@
 const BASE_URL = "http://localhost:5000/api";
 
+/* ================= COMMON FETCH ================= */
+
+const apiRequest = async (url, method = "GET", body = null, token = null) => {
+  try {
+    const options = {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    if (body) options.body = JSON.stringify(body);
+    if (token) options.headers.Authorization = `Bearer ${token}`;
+
+    const res = await fetch(url, options);
+    return await res.json();
+  } catch {
+    return { success: false, message: "Server error" };
+  }
+};
+
 /* ================= AUTH ================= */
 
-// 🔹 Register
-export const registerUser = async (email, password) => {
-  try {
-    const res = await fetch(`${BASE_URL}/auth/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+export const registerUser = (email, password) =>
+  apiRequest(`${BASE_URL}/auth/register`, "POST", { email, password });
 
-    return await res.json();
-  } catch {
-    return { success: false, message: "Server error" };
-  }
-};
-
-// 🔹 Login
-export const loginUser = async (email, password) => {
-  try {
-    const res = await fetch(`${BASE_URL}/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-
-    return await res.json();
-  } catch {
-    return { success: false, message: "Server error" };
-  }
-};
+export const loginUser = (email, password) =>
+  apiRequest(`${BASE_URL}/auth/login`, "POST", { email, password });
 
 /* ================= POSTS ================= */
 
-// 🔥 UPDATED (Search + Sort + Pagination)
 export const fetchPosts = async ({
   page = 1,
   limit = 5,
   search = "",
   sort = "latest",
-} = {}) => {
-  try {
-    const res = await fetch(
-      `${BASE_URL}/posts?page=${page}&limit=${limit}&search=${search}&sort=${sort}`
-    );
+} = {}) =>
+  apiRequest(
+    `${BASE_URL}/posts?page=${page}&limit=${limit}&search=${search}&sort=${sort}`
+  );
 
-    return await res.json();
-  } catch {
-    return { success: false, message: "Failed to fetch posts" };
-  }
-};
+export const createPost = (token, data) =>
+  apiRequest(`${BASE_URL}/posts`, "POST", data, token);
 
-// 🔹 Create Post
-export const createPost = async (token, data) => {
-  try {
-    const res = await fetch(`${BASE_URL}/posts`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(data),
-    });
+export const updatePost = (token, id, data) =>
+  apiRequest(`${BASE_URL}/posts/${id}`, "PUT", data, token);
 
-    return await res.json();
-  } catch {
-    return { success: false, message: "Failed to create post" };
-  }
-};
-
-// 🔹 Update Post
-export const updatePost = async (token, id, data) => {
-  try {
-    const res = await fetch(`${BASE_URL}/posts/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(data),
-    });
-
-    return await res.json();
-  } catch {
-    return { success: false, message: "Failed to update post" };
-  }
-};
-
-// 🔹 Delete Post
-export const deletePost = async (token, id) => {
-  try {
-    const res = await fetch(`${BASE_URL}/posts/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    return await res.json();
-  } catch {
-    return { success: false, message: "Failed to delete post" };
-  }
-};
+export const deletePost = (token, id) =>
+  apiRequest(`${BASE_URL}/posts/${id}`, "DELETE", null, token);

@@ -1,4 +1,4 @@
-# MERN Stack Challenge – Day 1 to 23
+# MERN Stack Challenge – Day 1 to 24
 
 ## Focus
 - JavaScript fundamentals
@@ -423,3 +423,10 @@ Day-23:
 - MongoDB regex search
 - Sorting using .sort()
 - Built real-time dynamic UI
+
+Day-24:
+- Implemented frontend pagination
+- Managed page state in React
+- Connected page with API query params
+- Added Previous and Next buttons
+- Learned pagination flow frontend → backend → database
