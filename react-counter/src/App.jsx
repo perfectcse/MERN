@@ -4,14 +4,14 @@ import { useState } from "react";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Navbar from "./components/Navbar";
+import Dashboard from "./pages/Dashboard";
+import Navbar from "./Components/Navbar";
 
 import { isTokenExpired } from "./utils/auth";
 
 import "./styles/global.css";
 
 function App() {
-
   const storedToken = localStorage.getItem("token");
   const storedRole = localStorage.getItem("role");
 
@@ -35,12 +35,18 @@ function App() {
 
   return (
     <div className="app-container">
-
       <Navbar token={token} role={role} onLogout={handleLogout} />
 
       <Routes>
+        {/* Dashboard */}
+        <Route
+          path="/dashboard"
+          element={
+            token ? <Dashboard /> : <Navigate to="/login" />
+          }
+        />
 
-        {/* Protected Home */}
+        {/* Home */}
         <Route
           path="/"
           element={
@@ -71,9 +77,7 @@ function App() {
             token ? <Navigate to="/" /> : <Register />
           }
         />
-
       </Routes>
-
     </div>
   );
 }

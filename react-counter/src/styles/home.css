@@ -272,3 +272,27 @@ button:active {
   font-weight: 600;
   color: #333;
 }
+.post-form button {
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, #4e73df, #1cc88a);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  letter-spacing: 0.5px;
+  align-self: flex-start;
+  min-width: 150px;
+}
+
+/* Hover */
+.post-form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+}
+
+/* Click */
+.post-form button:active {
+  transform: scale(0.98);
+}

@@ -19,7 +19,6 @@ function Navbar({ token, role, onLogout }) {
 
       {/* 🔹 Navigation Links */}
       <div className="nav-links">
-
         <Link to="/">Home</Link>
 
         {!token ? (
@@ -29,7 +28,10 @@ function Navbar({ token, role, onLogout }) {
           </>
         ) : (
           <>
-            {/* 🔥 Show Role Badge */}
+            {/* 🔥 Dashboard Link */}
+            <Link to="/dashboard">Dashboard</Link>
+
+            {/* 🔥 Role Badge */}
             <span className="role-badge">
               {role === "admin" ? "Admin 👑" : "User 👤"}
             </span>
@@ -42,7 +44,6 @@ function Navbar({ token, role, onLogout }) {
             </button>
           </>
         )}
-
       </div>
     </nav>
   );

@@ -1,4 +1,4 @@
-# MERN Stack Challenge – Day 1 to 24
+# MERN Stack Challenge – Day 1 to 25
 
 ## Focus
 - JavaScript fundamentals
@@ -430,3 +430,11 @@ Day-24:
 - Connected page with API query params
 - Added Previous and Next buttons
 - Learned pagination flow frontend → backend → database
+
+Day-25:
+- Created Layout component
+- Created Dashboard page
+- Created StatsCard reusable component
+- Added Dashboard route
+- Learned reusable component architecture
+- Learned layout structure in React
