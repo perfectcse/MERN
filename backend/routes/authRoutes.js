@@ -3,16 +3,18 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
+// IMPORTANT: destructuring import
+const { protect } = require("../middleware/authMiddleware");
+
 const router = express.Router();
 
-
-// ================= REGISTER =================
+/* ================= REGISTER ================= */
 router.post("/register", async (req, res) => {
   try {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({
+      return res.json({
         success: false,
         message: "Email and password required",
       });
@@ -21,7 +23,7 @@ router.post("/register", async (req, res) => {
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      return res.status(400).json({
+      return res.json({
         success: false,
         message: "User already exists",
       });
@@ -29,27 +31,25 @@ router.post("/register", async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await User.create({
+    await User.create({
       email,
       password: hashedPassword,
-      role: "user", // default role
+      role: "user",
     });
 
-    res.status(201).json({
+    res.json({
       success: true,
       message: "User registered successfully",
     });
-
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
       message: "Server error",
     });
   }
 });
 
-
-// ================= LOGIN =================
+/* ================= LOGIN ================= */
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -57,7 +57,7 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(401).json({
+      return res.json({
         success: false,
         message: "Invalid credentials",
       });
@@ -66,13 +66,13 @@ router.post("/login", async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(401).json({
+      return res.json({
         success: false,
         message: "Invalid credentials",
       });
     }
 
-    // 🔥 INCLUDE ROLE IN JWT
+    // JWT token with role
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
@@ -82,11 +82,27 @@ router.post("/login", async (req, res) => {
     res.json({
       success: true,
       token,
-      role: user.role, // send role to frontend
+      role: user.role,
     });
-
   } catch (error) {
-    res.status(500).json({
+    res.json({
+      success: false,
+      message: "Server error",
+    });
+  }
+});
+
+/* ================= GET CURRENT USER ================= */
+router.get("/me", protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+
+    res.json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    res.json({
       success: false,
       message: "Server error",
     });

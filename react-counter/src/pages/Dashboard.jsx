@@ -5,13 +5,20 @@ import "../styles/dashboard.css";
 
 function Dashboard() {
   const [totalPosts, setTotalPosts] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await fetchPosts({ page: 1, limit: 100 });
+      try {
+        const data = await fetchPosts({ page: 1, limit: 100 });
 
-      if (data.success) {
-        setTotalPosts(data.totalPosts);
+        if (data.success) {
+          setTotalPosts(data.totalPosts);
+        }
+      } catch (error) {
+        console.log("Dashboard error:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -20,13 +27,17 @@ function Dashboard() {
 
   return (
     <div className="dashboard">
-      <h1>Dashboard</h1>
+      <h1 className="dashboard-title">Dashboard</h1>
 
-      <div className="stats-container">
-        <StatsCard title="Total Posts" value={totalPosts} />
-        <StatsCard title="Users" value="2" />
-        <StatsCard title="Admin" value="1" />
-      </div>
+      {loading ? (
+        <p>Loading stats...</p>
+      ) : (
+        <div className="stats-container">
+          <StatsCard title="Total Posts" value={totalPosts} />
+          <StatsCard title="Users" value="2" />
+          <StatsCard title="Admin" value="1" />
+        </div>
+      )}
     </div>
   );
 }

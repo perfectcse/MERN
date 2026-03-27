@@ -11,10 +11,9 @@ function Navbar({ token, role, onLogout }) {
 
   return (
     <nav className="navbar">
-
       {/* 🔹 Logo */}
       <div className="navbar-logo">
-        <Link to="/">MERN + JWT</Link>
+        <Link to="/">MERN STACK</Link>
       </div>
 
       {/* 🔹 Navigation Links */}
@@ -28,18 +27,19 @@ function Navbar({ token, role, onLogout }) {
           </>
         ) : (
           <>
-            {/* 🔥 Dashboard Link */}
+            {/* Dashboard */}
             <Link to="/dashboard">Dashboard</Link>
 
-            {/* 🔥 Role Badge */}
+            {/* Profile */}
+            <Link to="/profile">Profile</Link>
+
+            {/* Role Badge */}
             <span className="role-badge">
               {role === "admin" ? "Admin 👑" : "User 👤"}
             </span>
 
-            <button
-              className="logout-btn"
-              onClick={handleLogoutClick}
-            >
+            {/* Logout */}
+            <button className="logout-btn" onClick={handleLogoutClick}>
               Logout
             </button>
           </>

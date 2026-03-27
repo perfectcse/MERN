@@ -184,6 +184,16 @@ Day-25:
 - Learned reusable component architecture
 - Learned layout structure in React
 
+Day-26:
+- Created /api/auth/me API
+- Created Profile page
+- Added Profile route
+- Added Profile link in Navbar
+- Protected Profile route
+- Fetch current logged-in user
+- Authorization header
+- JWT user identification
+
 ⚙️ Backend Architecture
 backend
 │

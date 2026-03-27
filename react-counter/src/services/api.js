@@ -1,7 +1,6 @@
 const BASE_URL = "http://localhost:5000/api";
 
 /* ================= COMMON FETCH ================= */
-
 const apiRequest = async (url, method = "GET", body = null, token = null) => {
   try {
     const options = {
@@ -22,7 +21,6 @@ const apiRequest = async (url, method = "GET", body = null, token = null) => {
 };
 
 /* ================= AUTH ================= */
-
 export const registerUser = (email, password) =>
   apiRequest(`${BASE_URL}/auth/register`, "POST", { email, password });
 
@@ -30,8 +28,7 @@ export const loginUser = (email, password) =>
   apiRequest(`${BASE_URL}/auth/login`, "POST", { email, password });
 
 /* ================= POSTS ================= */
-
-export const fetchPosts = async ({
+export const fetchPosts = ({
   page = 1,
   limit = 5,
   search = "",
@@ -49,3 +46,7 @@ export const updatePost = (token, id, data) =>
 
 export const deletePost = (token, id) =>
   apiRequest(`${BASE_URL}/posts/${id}`, "DELETE", null, token);
+
+/* ================= PROFILE ================= */
+export const getProfile = (token) =>
+  apiRequest(`${BASE_URL}/auth/me`, "GET", null, token);

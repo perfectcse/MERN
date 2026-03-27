@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
 import Navbar from "./Components/Navbar";
 
 import { isTokenExpired } from "./utils/auth";
@@ -41,8 +42,14 @@ function App() {
         {/* Dashboard */}
         <Route
           path="/dashboard"
+          element={token ? <Dashboard /> : <Navigate to="/login" />}
+        />
+
+        {/* Profile */}
+        <Route
+          path="/profile"
           element={
-            token ? <Dashboard /> : <Navigate to="/login" />
+            token ? <Profile token={token} /> : <Navigate to="/login" />
           }
         />
 
@@ -73,9 +80,7 @@ function App() {
         {/* Register */}
         <Route
           path="/register"
-          element={
-            token ? <Navigate to="/" /> : <Register />
-          }
+          element={token ? <Navigate to="/" /> : <Register />}
         />
       </Routes>
     </div>
