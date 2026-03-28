@@ -38,6 +38,9 @@ export const fetchPosts = ({
     `${BASE_URL}/posts?page=${page}&limit=${limit}&search=${search}&sort=${sort}`
   );
 
+export const getSinglePost = (id) =>
+  apiRequest(`${BASE_URL}/posts/${id}`);
+
 export const createPost = (token, data) =>
   apiRequest(`${BASE_URL}/posts`, "POST", data, token);
 
@@ -46,6 +49,26 @@ export const updatePost = (token, id, data) =>
 
 export const deletePost = (token, id) =>
   apiRequest(`${BASE_URL}/posts/${id}`, "DELETE", null, token);
+
+/* ================= COMMENTS ================= */
+export const getComments = (postId) =>
+  apiRequest(`${BASE_URL}/comments/${postId}`);
+
+export const addComment = (token, postId, text) =>
+  apiRequest(
+    `${BASE_URL}/comments/${postId}`,
+    "POST",
+    { text },
+    token
+  );
+
+export const deleteComment = (token, commentId) =>
+  apiRequest(
+    `${BASE_URL}/comments/${commentId}`,
+    "DELETE",
+    null,
+    token
+  );
 
 /* ================= PROFILE ================= */
 export const getProfile = (token) =>

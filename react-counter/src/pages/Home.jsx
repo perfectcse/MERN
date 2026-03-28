@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   fetchPosts,
   createPost,
@@ -9,6 +11,8 @@ import {
 import "../styles/home.css";
 
 function Home({ token, role }) {
+  const navigate = useNavigate();
+
   const [posts, setPosts] = useState([]);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -21,7 +25,7 @@ function Home({ token, role }) {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("latest");
 
-  // 🔹 Load posts (inside useEffect to avoid warning)
+  // Load posts
   useEffect(() => {
     const loadPosts = async () => {
       setLoading(true);
@@ -42,7 +46,7 @@ function Home({ token, role }) {
     loadPosts();
   }, [page, search, sort]);
 
-  // 🔹 Reload posts after create/update/delete
+  // Reload posts after create/update/delete
   const reloadPosts = async () => {
     const data = await fetchPosts({ page, search, sort });
     if (data.success) {
@@ -51,7 +55,7 @@ function Home({ token, role }) {
     }
   };
 
-  // 🔹 Create or Update
+  // Create or Update Post
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -76,7 +80,7 @@ function Home({ token, role }) {
     }
   };
 
-  // 🔹 Delete
+  // Delete Post
   const handleDelete = async (id) => {
     try {
       const response = await deletePost(token, id);
@@ -92,7 +96,7 @@ function Home({ token, role }) {
     }
   };
 
-  // 🔹 Edit
+  // Edit Post
   const handleEdit = (post) => {
     setTitle(post.title);
     setBody(post.body);
@@ -102,7 +106,6 @@ function Home({ token, role }) {
 
   return (
     <div className="home-container">
-
       {/* SEARCH + SORT */}
       <div className="filters">
         <input
@@ -172,6 +175,15 @@ function Home({ token, role }) {
                   <h4>{post.title}</h4>
                   <p>{post.body}</p>
 
+                  {/* View Single Post */}
+                  <button
+                    className="view-btn"
+                    onClick={() => navigate(`/post/${post._id}`)}
+                  >
+                    View Post
+                  </button>
+
+                  {/* Edit/Delete */}
                   {token && (
                     <div className="post-actions">
                       <button

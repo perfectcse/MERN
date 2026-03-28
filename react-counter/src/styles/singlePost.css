@@ -1,0 +1,94 @@
+.single-post-container {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Post Card */
+.post-card {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Comment Section */
+.comment-section {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Comment Form */
+.comment-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.comment-form input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.comment-form button {
+  padding: 10px 16px;
+  background: #f63b3b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.comment-form button:hover {
+  background: #eb7b25;
+}
+
+/* Comments */
+.comments-container {
+  margin-top: 10px;
+}
+
+.comment {
+  background: #f9fafb;
+  border: 1px solid #eee;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.comment-text {
+  font-size: 14px;
+  color: #444;
+}
+
+/* Delete Button */
+.delete-btn {
+  background: hsl(26, 30%, 44%);
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  width: 70px;
+}
+
+.delete-btn:hover {
+  background: hsl(39, 72%, 51%);
+}
+.Addcomment-btn :hover {
+  background: lch(48.12% 80.92 34.69);
+}

@@ -6,6 +6,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
+import SinglePost from "./pages/SinglePost";
+
 import Navbar from "./Components/Navbar";
 
 import { isTokenExpired } from "./utils/auth";
@@ -39,6 +41,18 @@ function App() {
       <Navbar token={token} role={role} onLogout={handleLogout} />
 
       <Routes>
+        {/* Home */}
+        <Route
+          path="/"
+          element={
+            token ? (
+              <Home token={token} role={role} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
         {/* Dashboard */}
         <Route
           path="/dashboard"
@@ -53,16 +67,10 @@ function App() {
           }
         />
 
-        {/* Home */}
+        {/* Single Post Page */}
         <Route
-          path="/"
-          element={
-            token ? (
-              <Home token={token} role={role} />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
+          path="/post/:id"
+          element={token ? <SinglePost /> : <Navigate to="/login" />}
         />
 
         {/* Login */}

@@ -1,7 +1,7 @@
 const Post = require("../models/Post");
 const asyncHandler = require("../middleware/asyncHandler");
 
-// CREATE
+// CREATE POST
 exports.createPost = asyncHandler(async (req, res) => {
   const { title, body } = req.body;
 
@@ -19,9 +19,9 @@ exports.createPost = asyncHandler(async (req, res) => {
   });
 });
 
-// READ
+// READ ALL POSTS
 exports.getPosts = asyncHandler(async (req, res) => {
-  const posts = await Post.find();
+  const posts = await Post.find().sort({ createdAt: -1 });
 
   res.status(200).json({
     success: true,
@@ -30,7 +30,23 @@ exports.getPosts = asyncHandler(async (req, res) => {
   });
 });
 
-// UPDATE
+// GET SINGLE POST
+exports.getSinglePost = asyncHandler(async (req, res) => {
+  const post = await Post.findById(req.params.id);
+
+  if (!post) {
+    const error = new Error("Post not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  res.status(200).json({
+    success: true,
+    data: post,
+  });
+});
+
+// UPDATE POST
 exports.updatePost = asyncHandler(async (req, res) => {
   const { title, body } = req.body;
 
@@ -58,7 +74,7 @@ exports.updatePost = asyncHandler(async (req, res) => {
   });
 });
 
-// DELETE
+// DELETE POST
 exports.deletePost = asyncHandler(async (req, res) => {
   const deleted = await Post.findByIdAndDelete(req.params.id);
 

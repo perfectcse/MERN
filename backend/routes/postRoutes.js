@@ -6,12 +6,9 @@ const { validatePost } = require("../middleware/validationMiddleware");
 
 const router = express.Router();
 
-
 // 📌 GET POSTS WITH SEARCH + SORT + PAGINATION + DATE FILTER
-
 router.get("/", async (req, res, next) => {
   try {
-    // Query parameters
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
     const search = req.query.search || "";
@@ -21,42 +18,31 @@ router.get("/", async (req, res, next) => {
 
     const skip = (page - 1) * limit;
 
-    // 🔎 Base filter (multi-field search)
     let filter = {
       $or: [
         { title: { $regex: search, $options: "i" } },
-        { body: { $regex: search, $options: "i" } }
-      ]
+        { body: { $regex: search, $options: "i" } },
+      ],
     };
 
-    // 📅 Date filtering
     if (startDate && endDate) {
       filter.createdAt = {
         $gte: new Date(startDate),
-        $lte: new Date(endDate)
+        $lte: new Date(endDate),
       };
     }
 
-    // 🔽 Sorting
     let sortOption = {};
+    if (sort === "latest") sortOption = { createdAt: -1 };
+    else if (sort === "oldest") sortOption = { createdAt: 1 };
+    else if (sort === "title") sortOption = { title: 1 };
+    else sortOption = { createdAt: -1 };
 
-    if (sort === "latest") {
-      sortOption = { createdAt: -1 };
-    } else if (sort === "oldest") {
-      sortOption = { createdAt: 1 };
-    } else if (sort === "title") {
-      sortOption = { title: 1 };
-    } else {
-      sortOption = { createdAt: -1 };
-    }
-
-    // Fetch posts
     const posts = await Post.find(filter)
       .sort(sortOption)
       .skip(skip)
       .limit(limit);
 
-    // Count filtered posts
     const totalPosts = await Post.countDocuments(filter);
 
     res.json({
@@ -69,39 +55,54 @@ router.get("/", async (req, res, next) => {
       endDate,
       totalPosts,
       totalPages: Math.ceil(totalPosts / limit),
-      data: posts
+      data: posts,
     });
-
   } catch (error) {
     next(error);
   }
 });
 
+// 📌 GET SINGLE POST
+router.get("/:id", async (req, res, next) => {
+  try {
+    const post = await Post.findById(req.params.id);
+
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: "Post not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      data: post,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 // 📌 CREATE POST
-
 router.post("/", protect, validatePost, async (req, res, next) => {
   try {
     const { title, body } = req.body;
 
     const newPost = await Post.create({
       title,
-      body
+      body,
     });
 
     res.json({
       success: true,
-      data: newPost
+      data: newPost,
     });
-
   } catch (error) {
     next(error);
   }
 });
 
-
 // ✏️ UPDATE POST
-
 router.put("/:id", protect, validatePost, async (req, res, next) => {
   try {
     const { title, body } = req.body;
@@ -114,26 +115,22 @@ router.put("/:id", protect, validatePost, async (req, res, next) => {
 
     res.json({
       success: true,
-      data: updatedPost
+      data: updatedPost,
     });
-
   } catch (error) {
     next(error);
   }
 });
 
-
 // 🗑 DELETE POST
-
 router.delete("/:id", protect, adminOnly, async (req, res, next) => {
   try {
     await Post.findByIdAndDelete(req.params.id);
 
     res.json({
       success: true,
-      message: "Post deleted by admin"
+      message: "Post deleted by admin",
     });
-
   } catch (error) {
     next(error);
   }
