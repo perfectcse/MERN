@@ -38,7 +38,6 @@ const SinglePost = () => {
     fetchData();
   }, [id]);
 
-  // Function to reload comments after add/delete
   const reloadComments = async () => {
     try {
       const commentRes = await axios.get(

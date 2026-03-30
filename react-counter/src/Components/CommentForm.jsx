@@ -24,7 +24,6 @@ const CommentForm = ({ postId, onCommentAdded }) => {
 
       setText("");
 
-      // Instead of reload, refresh comments
       if (onCommentAdded) onCommentAdded();
     } catch (err) {
       console.log(err);
@@ -32,33 +31,15 @@ const CommentForm = ({ postId, onCommentAdded }) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{ marginBottom: "15px" }}
-    >
+    <form className="comment-form" onSubmit={handleSubmit}>
       <input
         type="text"
         placeholder="Write a comment..."
         value={text}
         onChange={(e) => setText(e.target.value)}
-        style={{
-          padding: "8px",
-          width: "70%",
-          marginRight: "10px",
-        }}
       />
-      <button
-        type="submit"
-        style={{
-          padding: "8px 12px",
-          background: "#3b82f6",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-        }}
-      >
-        Add Comment
-      </button>
+
+      <button type="submit">Add Comment</button>
     </form>
   );
 };
