@@ -25,65 +25,119 @@ const buildCommentTree = (comments) => {
 const CommentItem = ({ comment, reload }) => {
   const [showReply, setShowReply] = useState(false);
   const [replyText, setReplyText] = useState("");
+  const [editing, setEditing] = useState(false);
+  const [editText, setEditText] = useState(comment.text);
 
+  // Delete Comment
   const deleteComment = async () => {
-    try {
-      const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-      await axios.delete(
-        `http://localhost:5000/api/comments/${comment._id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    await axios.delete(
+      `http://localhost:5000/api/comments/${comment._id}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
 
-      reload();
-    } catch (err) {
-      console.log(err);
-    }
+    reload();
   };
 
+  // Reply Comment
   const replyComment = async () => {
-    try {
-      const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-      await axios.post(
-        `http://localhost:5000/api/comments/${comment.post}`,
-        {
-          text: replyText,
-          parentComment: comment._id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    await axios.post(
+      `http://localhost:5000/api/comments/${comment.post}`,
+      {
+        text: replyText,
+        parentComment: comment._id,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
 
-      setReplyText("");
-      setShowReply(false);
-      reload();
-    } catch (err) {
-      console.log(err);
-    }
+    setReplyText("");
+    setShowReply(false);
+    reload();
+  };
+
+  // Like Comment
+  const likeComment = async () => {
+    const token = localStorage.getItem("token");
+
+    await axios.put(
+      `http://localhost:5000/api/comments/like/${comment._id}`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    reload();
+  };
+
+  // Edit Comment
+  const editComment = async () => {
+    const token = localStorage.getItem("token");
+
+    await axios.put(
+      `http://localhost:5000/api/comments/edit/${comment._id}`,
+      { text: editText },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    setEditing(false);
+    reload();
   };
 
   return (
     <div className="comment-wrapper">
       <div className="comment">
         <div className="comment-left">
-          <strong>{comment.user?.email}</strong>: {comment.text}
+          <strong>{comment.user?.email}</strong>:
+
+          {editing ? (
+            <input
+              value={editText}
+              onChange={(e) => setEditText(e.target.value)}
+            />
+          ) : (
+            <>
+              {" "}{comment.text}
+              {comment.edited && <span className="edited">(edited)</span>}
+            </>
+          )}
+
+          <div className="comment-meta">
+            👍 {comment.likes} •{" "}
+            {new Date(comment.createdAt).toLocaleString()}
+          </div>
         </div>
 
         <div className="comment-right">
-          <button
-            className="reply-btn"
-            onClick={() => setShowReply(!showReply)}
-          >
+          <button className="reply-btn" onClick={() => setShowReply(!showReply)}>
             Reply
           </button>
+
+          <button className="reply-btn" onClick={likeComment}>
+            Like
+          </button>
+
+          {editing ? (
+            <button className="reply-btn" onClick={editComment}>
+              Save
+            </button>
+          ) : (
+            <button
+              className="reply-btn"
+              onClick={() => setEditing(true)}
+            >
+              Edit
+            </button>
+          )}
 
           <button className="delete-btn" onClick={deleteComment}>
             Delete

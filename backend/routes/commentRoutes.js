@@ -16,4 +16,7 @@ router.delete("/:commentId", authMiddleware.protect, commentController.deleteCom
 // Like comment
 router.put("/like/:commentId", authMiddleware.protect, commentController.likeComment);
 
+// Edit comment
+router.put("/edit/:commentId", authMiddleware.protect, commentController.editComment);
+
 module.exports = router;

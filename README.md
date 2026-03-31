@@ -1,4 +1,4 @@
-# MERN Stack Challenge – Day 1 to 27
+# MERN Stack Challenge – Day 1 to 29
 
 ## Focus
 - JavaScript fundamentals
@@ -467,3 +467,15 @@ Learning:
 • Improving Single Post page
 • Better UI for comments section
 Project is slowly becoming a full MERN Blog / Social App.
+
+Day-29 Work:
+- Implemented Like Comment feature
+- Implemented Edit Comment feature
+- Added edited flag in comments
+- Display likes count in UI
+- Display comment timestamp
+- Only comment owner can edit/delete
+- Used PUT request for update operations
+- Updated comment routes and controller
+- Added edit UI in React
+- Used conditional rendering for edit input
