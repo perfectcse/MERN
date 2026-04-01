@@ -1,12 +1,14 @@
 const express = require("express");
+const router = express.Router();
+
 const Post = require("../models/Post");
+const Comment = require("../models/Comment");
 
 const { protect, adminOnly } = require("../middleware/authMiddleware");
 const { validatePost } = require("../middleware/validationMiddleware");
 
-const router = express.Router();
 
-// 📌 GET POSTS WITH SEARCH + SORT + PAGINATION + DATE FILTER
+// 📌 GET POSTS WITH SEARCH + SORT + PAGINATION + DATE FILTER + COMMENT COUNT
 router.get("/", async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -18,6 +20,7 @@ router.get("/", async (req, res, next) => {
 
     const skip = (page - 1) * limit;
 
+    // Search filter
     let filter = {
       $or: [
         { title: { $regex: search, $options: "i" } },
@@ -25,6 +28,7 @@ router.get("/", async (req, res, next) => {
       ],
     };
 
+    // Date filter
     if (startDate && endDate) {
       filter.createdAt = {
         $gte: new Date(startDate),
@@ -32,16 +36,32 @@ router.get("/", async (req, res, next) => {
       };
     }
 
+    // Sorting
     let sortOption = {};
     if (sort === "latest") sortOption = { createdAt: -1 };
     else if (sort === "oldest") sortOption = { createdAt: 1 };
     else if (sort === "title") sortOption = { title: 1 };
     else sortOption = { createdAt: -1 };
 
+    // Fetch posts
     const posts = await Post.find(filter)
       .sort(sortOption)
       .skip(skip)
       .limit(limit);
+
+    // Add comment count to each post
+    const postsWithCounts = await Promise.all(
+      posts.map(async (post) => {
+        const commentsCount = await Comment.countDocuments({
+          post: post._id,
+        });
+
+        return {
+          ...post._doc,
+          commentsCount,
+        };
+      })
+    );
 
     const totalPosts = await Post.countDocuments(filter);
 
@@ -55,12 +75,13 @@ router.get("/", async (req, res, next) => {
       endDate,
       totalPosts,
       totalPages: Math.ceil(totalPosts / limit),
-      data: posts,
+      data: postsWithCounts,
     });
   } catch (error) {
     next(error);
   }
 });
+
 
 // 📌 GET SINGLE POST
 router.get("/:id", async (req, res, next) => {
@@ -83,6 +104,7 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
+
 // 📌 CREATE POST
 router.post("/", protect, validatePost, async (req, res, next) => {
   try {
@@ -101,6 +123,7 @@ router.post("/", protect, validatePost, async (req, res, next) => {
     next(error);
   }
 });
+
 
 // ✏️ UPDATE POST
 router.put("/:id", protect, validatePost, async (req, res, next) => {
@@ -122,6 +145,7 @@ router.put("/:id", protect, validatePost, async (req, res, next) => {
   }
 });
 
+
 // 🗑 DELETE POST
 router.delete("/:id", protect, adminOnly, async (req, res, next) => {
   try {
@@ -135,5 +159,6 @@ router.delete("/:id", protect, adminOnly, async (req, res, next) => {
     next(error);
   }
 });
+
 
 module.exports = router;

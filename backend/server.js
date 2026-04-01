@@ -7,6 +7,7 @@ require("dotenv").config();
 const authRoutes = require("./routes/authRoutes");
 const postRoutes = require("./routes/postRoutes");
 const commentRoutes = require("./routes/commentRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 
 // Error Middleware
 const errorHandler = require("./middleware/errorMiddleware");
@@ -30,6 +31,7 @@ mongoose
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

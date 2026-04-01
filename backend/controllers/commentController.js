@@ -79,12 +79,32 @@ exports.deleteComment = async (req, res) => {
   }
 };
 
-// Like Comment
+// Like / Unlike Comment (Toggle)
 exports.likeComment = async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.commentId);
 
-    comment.likes += 1;
+    if (!comment) {
+      return res.status(404).json({
+        success: false,
+        message: "Comment not found",
+      });
+    }
+
+    const userId = req.user._id;
+
+    // If user already liked → unlike
+    if (comment.likedBy.includes(userId)) {
+      comment.likedBy = comment.likedBy.filter(
+        (id) => id.toString() !== userId.toString()
+      );
+    } else {
+      // Like
+      comment.likedBy.push(userId);
+    }
+
+    comment.likes = comment.likedBy.length;
+
     await comment.save();
 
     res.json({

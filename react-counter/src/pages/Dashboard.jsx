@@ -1,19 +1,34 @@
 import { useEffect, useState } from "react";
-import { fetchPosts } from "../services/api";
+import axios from "axios";
 import StatsCard from "../Components/StatCard";
 import "../styles/dashboard.css";
 
 function Dashboard() {
-  const [totalPosts, setTotalPosts] = useState(0);
+  const [stats, setStats] = useState({
+    totalPosts: 0,
+    totalComments: 0,
+    totalUsers: 0,
+    totalLikes: 0,
+  });
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadData = async () => {
+    const loadDashboard = async () => {
       try {
-        const data = await fetchPosts({ page: 1, limit: 100 });
+        const token = localStorage.getItem("token");
 
-        if (data.success) {
-          setTotalPosts(data.totalPosts);
+        const res = await axios.get(
+          "http://localhost:5000/api/dashboard",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (res.data.success) {
+          setStats(res.data.data);
         }
       } catch (error) {
         console.log("Dashboard error:", error);
@@ -22,7 +37,7 @@ function Dashboard() {
       }
     };
 
-    loadData();
+    loadDashboard();
   }, []);
 
   return (
@@ -33,9 +48,10 @@ function Dashboard() {
         <p>Loading stats...</p>
       ) : (
         <div className="stats-container">
-          <StatsCard title="Total Posts" value={totalPosts} />
-          <StatsCard title="Users" value="2" />
-          <StatsCard title="Admin" value="1" />
+          <StatsCard title="Total Posts" value={stats.totalPosts} />
+          <StatsCard title="Total Comments" value={stats.totalComments} />
+          <StatsCard title="Total Users" value={stats.totalUsers} />
+          <StatsCard title="Total Likes" value={stats.totalLikes} />
         </div>
       )}
     </div>

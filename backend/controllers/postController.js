@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+const Comment = require("../models/Comment");
 const asyncHandler = require("../middleware/asyncHandler");
 
 // CREATE POST
@@ -19,14 +20,27 @@ exports.createPost = asyncHandler(async (req, res) => {
   });
 });
 
-// READ ALL POSTS
+// READ ALL POSTS WITH COMMENT COUNT
 exports.getPosts = asyncHandler(async (req, res) => {
   const posts = await Post.find().sort({ createdAt: -1 });
 
+  const postsWithCounts = await Promise.all(
+    posts.map(async (post) => {
+      const commentsCount = await Comment.countDocuments({
+        post: post._id,
+      });
+
+      return {
+        ...post._doc,
+        commentsCount,
+      };
+    })
+  );
+
   res.status(200).json({
     success: true,
-    count: posts.length,
-    data: posts,
+    count: postsWithCounts.length,
+    data: postsWithCounts,
   });
 });
 

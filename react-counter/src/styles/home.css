@@ -296,3 +296,10 @@ button:active {
 .post-form button:active {
   transform: scale(0.98);
 }
+.post-info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 13px;
+  color: #666;
+}

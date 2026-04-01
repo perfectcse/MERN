@@ -1,3 +1,4 @@
+/* Dashboard Container */
 .dashboard {
   max-width: 1200px;
   margin: 40px auto;
@@ -5,11 +6,13 @@
   font-family: "Segoe UI", sans-serif;
 }
 
+/* Title */
 .dashboard-title {
   font-size: 28px;
   font-weight: 600;
   margin-bottom: 30px;
   color: #1e3c72;
+  text-align: center;
 }
 
 /* Stats Grid */
@@ -28,20 +31,37 @@
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
   transition: 0.3s;
   text-align: center;
+  position: relative;
+  overflow: hidden;
 }
 
+/* Hover Effect */
 .stat-card:hover {
   transform: translateY(-8px) scale(1.02);
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
 }
 
+/* Card Title */
 .stat-card h3 {
   font-size: 16px;
   margin-bottom: 10px;
   opacity: 0.9;
 }
 
+/* Card Number */
 .stat-card p {
-  font-size: 32px;
+  font-size: 36px;
   font-weight: bold;
+}
+
+/* Decorative Circle */
+.stat-card::after {
+  content: "";
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  top: -30px;
+  right: -30px;
 }

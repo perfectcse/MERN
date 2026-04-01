@@ -175,6 +175,14 @@ function Home({ token, role }) {
                   <h4>{post.title}</h4>
                   <p>{post.body}</p>
 
+                  {/* Post Info */}
+                  <div className="post-info">
+                    <span>💬 {post.commentsCount || 0} Comments</span>
+                    <span>
+                      📅 {new Date(post.createdAt).toDateString()}
+                    </span>
+                  </div>
+
                   {/* View Single Post */}
                   <button
                     className="view-btn"
