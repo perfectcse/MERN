@@ -1,4 +1,4 @@
-# MERN Stack Challenge – Day 1 to 29
+# MERN Stack Challenge – Day 1 to 30
 
 ## Focus
 - JavaScript fundamentals
@@ -479,3 +479,14 @@ Day-29 Work:
 - Updated comment routes and controller
 - Added edit UI in React
 - Used conditional rendering for edit input
+
+MongoDB countDocuments()
+MongoDB aggregate()
+JWT Authorization Header
+Protected Routes
+Dashboard Stats API
+Axios Headers
+React Dashboard UI
+Grid Layout CSS
+Role Based Authorization
+Comments Count per Post
