@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -6,6 +6,8 @@ import {
   createPost,
   updatePost,
   deletePost,
+  likePost,
+  bookmarkPost,
 } from "../services/api";
 
 import "../styles/home.css";
@@ -25,28 +27,29 @@ function Home({ token, role }) {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("latest");
 
-  // Load posts
-  useEffect(() => {
-    const loadPosts = async () => {
-      setLoading(true);
-      try {
-        const data = await fetchPosts({ page, search, sort });
+  // Load posts (useCallback to fix dependency warning)
+  const loadPosts = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await fetchPosts({ page, search, sort });
 
-        if (data.success) {
-          setPosts(data.data);
-          setTotalPages(data.totalPages);
-        }
-      } catch (error) {
-        console.error("Error loading posts:", error);
-      } finally {
-        setLoading(false);
+      if (data.success) {
+        setPosts(data.data);
+        setTotalPages(data.totalPages);
       }
-    };
-
-    loadPosts();
+    } catch (error) {
+      console.error("Error loading posts:", error);
+    } finally {
+      setLoading(false);
+    }
   }, [page, search, sort]);
 
-  // Reload posts after create/update/delete
+  // useEffect
+  useEffect(() => {
+    loadPosts();
+  }, [loadPosts]);
+
+  // Reload posts after create/update/delete/like/bookmark
   const reloadPosts = async () => {
     const data = await fetchPosts({ page, search, sort });
     if (data.success) {
@@ -102,6 +105,26 @@ function Home({ token, role }) {
     setBody(post.body);
     setEditId(post._id);
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Like Post
+  const handleLike = async (postId) => {
+    try {
+      await likePost(token, postId);
+      reloadPosts();
+    } catch (error) {
+      console.log("Like error:", error);
+    }
+  };
+
+  // Bookmark Post
+  const handleBookmark = async (postId) => {
+    try {
+      await bookmarkPost(token, postId);
+      reloadPosts();
+    } catch (error) {
+      console.log("Bookmark error:", error);
+    }
   };
 
   return (
@@ -175,12 +198,28 @@ function Home({ token, role }) {
                   <h4>{post.title}</h4>
                   <p>{post.body}</p>
 
-                  {/* Post Info */}
                   <div className="post-info">
                     <span>💬 {post.commentsCount || 0} Comments</span>
                     <span>
                       📅 {new Date(post.createdAt).toDateString()}
                     </span>
+                  </div>
+
+                  {/* Like + Bookmark */}
+                  <div className="post-buttons">
+                    <button
+                      className="like-btn"
+                      onClick={() => handleLike(post._id)}
+                    >
+                      ❤️ Like
+                    </button>
+
+                    <button
+                      className="bookmark-btn"
+                      onClick={() => handleBookmark(post._id)}
+                    >
+                      🔖 Bookmark
+                    </button>
                   </div>
 
                   {/* View Single Post */}

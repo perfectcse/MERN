@@ -1,6 +1,8 @@
 const Post = require("../models/Post");
 const Comment = require("../models/Comment");
+const User = require("../models/User");
 const asyncHandler = require("../middleware/asyncHandler");
+
 
 // CREATE POST
 exports.createPost = asyncHandler(async (req, res) => {
@@ -19,6 +21,7 @@ exports.createPost = asyncHandler(async (req, res) => {
     data: newPost,
   });
 });
+
 
 // READ ALL POSTS WITH COMMENT COUNT
 exports.getPosts = asyncHandler(async (req, res) => {
@@ -44,6 +47,7 @@ exports.getPosts = asyncHandler(async (req, res) => {
   });
 });
 
+
 // GET SINGLE POST
 exports.getSinglePost = asyncHandler(async (req, res) => {
   const post = await Post.findById(req.params.id);
@@ -59,6 +63,7 @@ exports.getSinglePost = asyncHandler(async (req, res) => {
     data: post,
   });
 });
+
 
 // UPDATE POST
 exports.updatePost = asyncHandler(async (req, res) => {
@@ -88,6 +93,7 @@ exports.updatePost = asyncHandler(async (req, res) => {
   });
 });
 
+
 // DELETE POST
 exports.deletePost = asyncHandler(async (req, res) => {
   const deleted = await Post.findByIdAndDelete(req.params.id);
@@ -101,5 +107,53 @@ exports.deletePost = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     message: "Post deleted successfully",
+  });
+});
+
+
+// LIKE POST
+exports.likePost = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+  const postId = req.params.postId;
+
+  if (user.likedPosts.includes(postId)) {
+    // Unlike
+    user.likedPosts = user.likedPosts.filter(
+      (id) => id.toString() !== postId
+    );
+  } else {
+    // Like
+    user.likedPosts.push(postId);
+  }
+
+  await user.save();
+
+  res.json({
+    success: true,
+    likedPosts: user.likedPosts,
+  });
+});
+
+
+// BOOKMARK POST
+exports.bookmarkPost = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+  const postId = req.params.postId;
+
+  if (user.bookmarks.includes(postId)) {
+    // Remove bookmark
+    user.bookmarks = user.bookmarks.filter(
+      (id) => id.toString() !== postId
+    );
+  } else {
+    // Add bookmark
+    user.bookmarks.push(postId);
+  }
+
+  await user.save();
+
+  res.json({
+    success: true,
+    bookmarks: user.bookmarks,
   });
 });

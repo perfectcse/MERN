@@ -4,19 +4,21 @@ const User = require("../models/User");
 
 exports.getDashboardStats = async (req, res) => {
   try {
-    const totalPosts = await Post.countDocuments();
-    const totalComments = await Comment.countDocuments();
-    const totalUsers = await User.countDocuments();
-
-    // Sum of likes
-    const likesData = await Comment.aggregate([
-      {
-        $group: {
-          _id: null,
-          totalLikes: { $sum: "$likes" },
-        },
-      },
-    ]);
+    // Run queries in parallel (faster)
+    const [totalPosts, totalComments, totalUsers, likesData] =
+      await Promise.all([
+        Post.countDocuments(),
+        Comment.countDocuments(),
+        User.countDocuments(),
+        Comment.aggregate([
+          {
+            $group: {
+              _id: null,
+              totalLikes: { $sum: "$likes" },
+            },
+          },
+        ]),
+      ]);
 
     const totalLikes = likesData[0]?.totalLikes || 0;
 
@@ -29,7 +31,9 @@ exports.getDashboardStats = async (req, res) => {
         totalLikes,
       },
     });
-  } catch (err) {
+  } catch (error) {
+    console.error("Dashboard error:", error);
+
     res.status(500).json({
       success: false,
       message: "Server error",

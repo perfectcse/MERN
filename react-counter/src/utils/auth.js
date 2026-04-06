@@ -1,11 +1,14 @@
 export const isTokenExpired = (token) => {
+  if (!token) return true;
+
   try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const payload = JSON.parse(atob(base64));
 
-    const expiry = payload.exp * 1000;
-    const now = Date.now();
+    if (!payload.exp) return true;
 
-    return now > expiry;
+    return Date.now() >= payload.exp * 1000;
   } catch {
     return true;
   }

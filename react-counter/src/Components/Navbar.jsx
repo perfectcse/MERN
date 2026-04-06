@@ -1,22 +1,43 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import "../styles/navbar.css";
 
 function Navbar({ token, role, onLogout }) {
   const navigate = useNavigate();
+
+  // Initialize state from localStorage (Correct way)
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem("theme") === "dark"
+  );
 
   const handleLogoutClick = () => {
     onLogout();
     navigate("/login");
   };
 
+  // Apply dark mode class when state changes
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.body.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [darkMode]);
+
+  const toggleDarkMode = () => {
+    setDarkMode((prev) => !prev);
+  };
+
   return (
     <nav className="navbar">
-      {/* 🔹 Logo */}
+      {/* Logo */}
       <div className="navbar-logo">
         <Link to="/">MERN STACK</Link>
       </div>
 
-      {/* 🔹 Navigation Links */}
+      {/* Navigation Links */}
       <div className="nav-links">
         <Link to="/">Home</Link>
 
@@ -27,11 +48,13 @@ function Navbar({ token, role, onLogout }) {
           </>
         ) : (
           <>
-            {/* Dashboard */}
             <Link to="/dashboard">Dashboard</Link>
-
-            {/* Profile */}
             <Link to="/profile">Profile</Link>
+
+            {/* Dark Mode Toggle */}
+            <button className="dark-btn" onClick={toggleDarkMode}>
+              {darkMode ? "☀️ Light" : "🌙 Dark"}
+            </button>
 
             {/* Role Badge */}
             <span className="role-badge">

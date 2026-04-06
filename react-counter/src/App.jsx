@@ -18,15 +18,17 @@ function App() {
   const storedToken = localStorage.getItem("token");
   const storedRole = localStorage.getItem("role");
 
-  const validToken =
-    storedToken && !isTokenExpired(storedToken) ? storedToken : null;
+  const initialToken =
+    storedToken && !isTokenExpired(storedToken)
+      ? storedToken
+      : null;
 
   if (storedToken && isTokenExpired(storedToken)) {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
   }
 
-  const [token, setToken] = useState(validToken);
+  const [token, setToken] = useState(initialToken);
   const [role, setRole] = useState(storedRole);
 
   const handleLogout = () => {
@@ -67,7 +69,7 @@ function App() {
           }
         />
 
-        {/* Single Post Page */}
+        {/* Single Post */}
         <Route
           path="/post/:id"
           element={token ? <SinglePost /> : <Navigate to="/login" />}

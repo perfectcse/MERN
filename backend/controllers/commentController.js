@@ -1,20 +1,34 @@
 const Comment = require("../models/Comment");
 
-// Add Comment / Reply
+/* ================= ADD COMMENT / REPLY ================= */
 exports.addComment = async (req, res) => {
   try {
+    const { text, parentComment } = req.body;
+
+    if (!text) {
+      return res.status(400).json({
+        success: false,
+        message: "Comment text required",
+      });
+    }
+
     const comment = await Comment.create({
-      text: req.body.text,
+      text,
       user: req.user._id,
       post: req.params.postId,
-      parentComment: req.body.parentComment || null,
+      parentComment: parentComment || null,
     });
+
+    // Populate user email
+    const populatedComment = await Comment.findById(comment._id)
+      .populate("user", "email");
 
     res.json({
       success: true,
-      data: comment,
+      data: populatedComment,
     });
   } catch (err) {
+    console.log("Add Comment Error:", err);
     res.status(500).json({
       success: false,
       message: "Server error",
@@ -22,7 +36,7 @@ exports.addComment = async (req, res) => {
   }
 };
 
-// Get Comments
+/* ================= GET COMMENTS ================= */
 exports.getComments = async (req, res) => {
   try {
     const comments = await Comment.find({
@@ -36,6 +50,7 @@ exports.getComments = async (req, res) => {
       data: comments,
     });
   } catch (err) {
+    console.log("Get Comments Error:", err);
     res.status(500).json({
       success: false,
       message: "Server error",
@@ -43,7 +58,7 @@ exports.getComments = async (req, res) => {
   }
 };
 
-// Delete Comment (Only Owner or Admin)
+/* ================= DELETE COMMENT ================= */
 exports.deleteComment = async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.commentId);
@@ -72,6 +87,7 @@ exports.deleteComment = async (req, res) => {
       message: "Comment deleted",
     });
   } catch (err) {
+    console.log("Delete Comment Error:", err);
     res.status(500).json({
       success: false,
       message: "Server error",
@@ -79,7 +95,7 @@ exports.deleteComment = async (req, res) => {
   }
 };
 
-// Like / Unlike Comment (Toggle)
+/* ================= LIKE / UNLIKE COMMENT ================= */
 exports.likeComment = async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.commentId);
@@ -93,8 +109,8 @@ exports.likeComment = async (req, res) => {
 
     const userId = req.user._id;
 
-    // If user already liked → unlike
     if (comment.likedBy.includes(userId)) {
+      // Unlike
       comment.likedBy = comment.likedBy.filter(
         (id) => id.toString() !== userId.toString()
       );
@@ -112,6 +128,7 @@ exports.likeComment = async (req, res) => {
       data: comment,
     });
   } catch (err) {
+    console.log("Like Comment Error:", err);
     res.status(500).json({
       success: false,
       message: "Server error",
@@ -119,7 +136,7 @@ exports.likeComment = async (req, res) => {
   }
 };
 
-// Edit Comment
+/* ================= EDIT COMMENT ================= */
 exports.editComment = async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.commentId);
@@ -148,6 +165,7 @@ exports.editComment = async (req, res) => {
       data: comment,
     });
   } catch (err) {
+    console.log("Edit Comment Error:", err);
     res.status(500).json({
       success: false,
       message: "Server error",

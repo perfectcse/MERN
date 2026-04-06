@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+
+import { getSinglePost, getComments } from "../services/api";
 
 import CommentForm from "../Components/CommentForm";
 import CommentsList from "../Components/CommentsList";
@@ -12,63 +13,81 @@ const SinglePost = () => {
 
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const postRes = await axios.get(
-          `http://localhost:5000/api/posts/${id}`
-        );
+  /* ================= LOAD POST + COMMENTS ================= */
+  const loadData = useCallback(async () => {
+    try {
+      setLoading(true);
 
-        const commentRes = await axios.get(
-          `http://localhost:5000/api/comments/${id}`
-        );
+      const postRes = await getSinglePost(id);
+      const commentRes = await getComments(id);
 
-        setPost(postRes.data.data);
+      if (postRes.success) {
+        setPost(postRes.data);
+      }
+
+      if (commentRes.success) {
         setComments(
-          Array.isArray(commentRes.data.data)
-            ? commentRes.data.data
+          Array.isArray(commentRes.data)
+            ? commentRes.data
             : []
         );
-      } catch (err) {
-        console.log(err);
       }
-    };
-
-    fetchData();
+    } catch (err) {
+      console.log("Load error:", err);
+    } finally {
+      setLoading(false);
+    }
   }, [id]);
 
-  const reloadComments = async () => {
-    try {
-      const commentRes = await axios.get(
-        `http://localhost:5000/api/comments/${id}`
-      );
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
+  /* ================= RELOAD COMMENTS ================= */
+  const reloadComments = async () => {
+    const commentRes = await getComments(id);
+
+    if (commentRes.success) {
       setComments(
-        Array.isArray(commentRes.data.data)
-          ? commentRes.data.data
+        Array.isArray(commentRes.data)
+          ? commentRes.data
           : []
       );
-    } catch (err) {
-      console.log(err);
     }
   };
 
-  if (!post) return <p>Loading post...</p>;
+  if (loading) return <p>Loading post...</p>;
+  if (!post) return <p>Post not found</p>;
 
   return (
     <div className="single-post-container">
+      {/* Post */}
       <div className="post-card">
         <h2>{post.title}</h2>
         <p>{post.body}</p>
+
+        <div className="post-meta">
+          <span>
+            📅 {new Date(post.createdAt).toDateString()}
+          </span>
+        </div>
       </div>
 
+      {/* Comments */}
       <div className="comment-section">
         <h3>Add Comment</h3>
-        <CommentForm postId={id} onCommentAdded={reloadComments} />
+        <CommentForm
+          postId={id}
+          onCommentAdded={reloadComments}
+        />
 
         <h3>Comments</h3>
-        <CommentsList comments={comments} onDelete={reloadComments} />
+        <CommentsList
+          comments={comments}
+          reload={reloadComments}
+        />
       </div>
     </div>
   );

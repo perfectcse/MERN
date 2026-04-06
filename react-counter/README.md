@@ -236,6 +236,18 @@ Grid Layout CSS
 Role Based Authorization
 Comments Count per Post
 
+​​📒 Day 31 – Short Notes
+Completed MERN Blog App major features
+Implemented JWT Authentication
+Added Role-based access (Admin/User)
+Built Posts CRUD with Search, Sort, Pagination
+Added Comments with Nested Replies
+Implemented Like & Bookmark system
+Profile Image Upload using Multer
+Dashboard Stats API
+Protected Routes & Token Expiry Logout
+Frontend + Backend integration completed
+
 Full backend + frontend integration
 
 ⚙️ Backend Architecture

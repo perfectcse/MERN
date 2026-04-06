@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 
-// Build nested comment tree
+/* ================= BUILD COMMENT TREE ================= */
 const buildCommentTree = (comments) => {
   const map = {};
   const roots = [];
@@ -21,83 +21,91 @@ const buildCommentTree = (comments) => {
   return roots;
 };
 
-// Recursive Comment Component
+/* ================= COMMENT ITEM ================= */
 const CommentItem = ({ comment, reload }) => {
   const [showReply, setShowReply] = useState(false);
   const [replyText, setReplyText] = useState("");
   const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState(comment.text);
 
-  // Delete Comment
+  const token = localStorage.getItem("token");
+
+  /* Delete Comment */
   const deleteComment = async () => {
-    const token = localStorage.getItem("token");
-
-    await axios.delete(
-      `http://localhost:5000/api/comments/${comment._id}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-
-    reload();
+    try {
+      await axios.delete(
+        `http://localhost:5000/api/comments/${comment._id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      reload();
+    } catch (err) {
+      console.log("Delete error:", err);
+    }
   };
 
-  // Reply Comment
+  /* Reply Comment */
   const replyComment = async () => {
-    const token = localStorage.getItem("token");
+    try {
+      await axios.post(
+        `http://localhost:5000/api/comments/${comment.post}`,
+        {
+          text: replyText,
+          parentComment: comment._id,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-    await axios.post(
-      `http://localhost:5000/api/comments/${comment.post}`,
-      {
-        text: replyText,
-        parentComment: comment._id,
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-
-    setReplyText("");
-    setShowReply(false);
-    reload();
+      setReplyText("");
+      setShowReply(false);
+      reload();
+    } catch (err) {
+      console.log("Reply error:", err);
+    }
   };
 
-  // Like Comment
+  /* Like Comment */
   const likeComment = async () => {
-    const token = localStorage.getItem("token");
-
-    await axios.put(
-      `http://localhost:5000/api/comments/like/${comment._id}`,
-      {},
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-
-    reload();
+    try {
+      await axios.put(
+        `http://localhost:5000/api/comments/like/${comment._id}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      reload();
+    } catch (err) {
+      console.log("Like error:", err);
+    }
   };
 
-  // Edit Comment
+  /* Edit Comment */
   const editComment = async () => {
-    const token = localStorage.getItem("token");
+    try {
+      await axios.put(
+        `http://localhost:5000/api/comments/edit/${comment._id}`,
+        { text: editText },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-    await axios.put(
-      `http://localhost:5000/api/comments/edit/${comment._id}`,
-      { text: editText },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-
-    setEditing(false);
-    reload();
+      setEditing(false);
+      reload();
+    } catch (err) {
+      console.log("Edit error:", err);
+    }
   };
 
   return (
     <div className="comment-wrapper">
       <div className="comment">
         <div className="comment-left">
-          <strong>{comment.user?.email}</strong>:
+          <strong>{comment.user?.email || "User"}</strong>:
 
           {editing ? (
             <input
@@ -107,39 +115,38 @@ const CommentItem = ({ comment, reload }) => {
           ) : (
             <>
               {" "}{comment.text}
-              {comment.edited && <span className="edited">(edited)</span>}
+              {comment.edited && (
+                <span className="edited"> (edited)</span>
+              )}
             </>
           )}
 
           <div className="comment-meta">
-            👍 {comment.likes} •{" "}
+            👍 {comment.likes || 0} •{" "}
             {new Date(comment.createdAt).toLocaleString()}
           </div>
         </div>
 
         <div className="comment-right">
-          <button className="reply-btn" onClick={() => setShowReply(!showReply)}>
+          <button onClick={() => setShowReply(!showReply)}>
             Reply
           </button>
 
-          <button className="reply-btn" onClick={likeComment}>
+          <button onClick={likeComment}>
             Like
           </button>
 
           {editing ? (
-            <button className="reply-btn" onClick={editComment}>
+            <button onClick={editComment}>
               Save
             </button>
           ) : (
-            <button
-              className="reply-btn"
-              onClick={() => setEditing(true)}
-            >
+            <button onClick={() => setEditing(true)}>
               Edit
             </button>
           )}
 
-          <button className="delete-btn" onClick={deleteComment}>
+          <button onClick={deleteComment}>
             Delete
           </button>
         </div>
@@ -156,7 +163,7 @@ const CommentItem = ({ comment, reload }) => {
         </div>
       )}
 
-      {/* Render Replies Recursively */}
+      {/* Recursive Replies */}
       {comment.replies &&
         comment.replies.map((reply) => (
           <div className="reply" key={reply._id}>
@@ -167,7 +174,8 @@ const CommentItem = ({ comment, reload }) => {
   );
 };
 
-const CommentsList = ({ comments, onDelete }) => {
+/* ================= COMMENTS LIST ================= */
+const CommentsList = ({ comments, reload }) => {
   if (!Array.isArray(comments)) return <p>No comments</p>;
 
   const nestedComments = buildCommentTree(comments);
@@ -178,7 +186,7 @@ const CommentsList = ({ comments, onDelete }) => {
         <CommentItem
           key={comment._id}
           comment={comment}
-          reload={onDelete}
+          reload={reload}
         />
       ))}
     </div>

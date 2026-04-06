@@ -14,11 +14,14 @@ const errorHandler = require("./middleware/errorMiddleware");
 
 const app = express();
 
-// Middleware
+/* ================= MIDDLEWARE ================= */
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Connection
+// Serve uploaded images
+app.use("/uploads", express.static("uploads"));
+
+/* ================= MONGODB CONNECTION ================= */
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected ✅"))
@@ -27,21 +30,21 @@ mongoose
     process.exit(1);
   });
 
-// API Routes
+/* ================= API ROUTES ================= */
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 
-// Test Route
+/* ================= TEST ROUTE ================= */
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-// Error Middleware (Always Last)
+/* ================= ERROR MIDDLEWARE ================= */
 app.use(errorHandler);
 
-// Start Server
+/* ================= START SERVER ================= */
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

@@ -1,13 +1,13 @@
 import Navbar from "./Navbar";
 
-function Layout({ children, token, onLogout }) {
+function Layout({ children, token, role, onLogout }) {
   return (
-    <div>
-      <Navbar token={token} onLogout={onLogout} />
+    <div className="layout">
+      <Navbar token={token} role={role} onLogout={onLogout} />
 
-      <div className="layout-container">
+      <main className="layout-container">
         {children}
-      </div>
+      </main>
     </div>
   );
 }

@@ -73,3 +73,62 @@
   transform: translateY(-2px);
   box-shadow: 0 8px 15px rgba(0,0,0,0.2);
 }
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1e3c72;
+  padding: 12px 25px;
+  color: white;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  margin-right: 15px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+}
+
+.logout-btn {
+  background: #ef4444;
+  border: none;
+  padding: 6px 12px;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.dark-btn {
+  background: #111827;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  margin-right: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.role-badge {
+  margin-right: 10px;
+}
+
+/* Dark Mode */
+body.dark {
+  background: #111827;
+  color: white;
+}
+
+body.dark .post-card,
+body.dark .profile-card,
+body.dark .stat-card,
+body.dark .comment,
+body.dark .chart-container,
+body.dark .post-form,
+body.dark .form-section {
+  background: #1f2937;
+  color: white;
+}

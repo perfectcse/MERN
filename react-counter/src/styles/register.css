@@ -1,67 +1,86 @@
 .register-container {
-  min-height: 80vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(to right, #4e73df, #1cc88a);
+  background: linear-gradient(135deg, #4e73df, #1cc88a);
+  padding: 20px;
 }
 
+/* Card */
 .register-card {
-  background: white;
-  padding: 40px;
-  width: 350px;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 40px 35px;
+  width: 380px;
+  border-radius: 16px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
   text-align: center;
+  animation: fadeIn 0.5s ease;
 }
 
+/* Title */
 .register-card h2 {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   color: #333;
+  font-weight: 600;
 }
 
+/* Subtitle */
 .register-subtitle {
   font-size: 14px;
   color: #777;
   margin-bottom: 25px;
 }
 
+/* Form */
 .register-card form {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
-.register-card input {
+/* Inputs */
+.register-card input,
+.register-card select {
   padding: 12px;
-  border-radius: 6px;
+  border-radius: 8px;
   border: 1px solid #ddd;
   font-size: 14px;
+  transition: 0.2s;
 }
 
-.register-card input:focus {
+/* Input focus */
+.register-card input:focus,
+.register-card select:focus {
   outline: none;
   border-color: #4e73df;
+  box-shadow: 0 0 0 2px rgba(78, 115, 223, 0.2);
 }
 
+/* Button */
 .register-card button {
   padding: 12px;
-  border-radius: 6px;
+  border-radius: 8px;
   border: none;
-  background: #4e73df;
+  background: linear-gradient(135deg, #4e73df, #2e59d9);
   color: white;
   font-size: 15px;
   cursor: pointer;
   transition: 0.3s ease;
 }
 
+/* Button hover */
 .register-card button:hover {
-  background: #2e59d9;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
+/* Login link */
 .login-link {
-  margin-top: 15px;
+  margin-top: 18px;
   font-size: 13px;
+  color: #555;
 }
 
 .login-link span {
@@ -72,4 +91,24 @@
 
 .login-link span:hover {
   text-decoration: underline;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .register-card {
+    width: 100%;
+    padding: 30px 20px;
+  }
 }
