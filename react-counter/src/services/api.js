@@ -39,7 +39,6 @@ const apiRequest = async (url, method = "GET", body = null, token = null) => {
 };
 
 /* ================= AUTH ================= */
-
 export const registerUser = (name, email, password, role) =>
   apiRequest(`${BASE_URL}/auth/register`, "POST", {
     name,
@@ -58,12 +57,10 @@ export const getProfile = (token) =>
   apiRequest(`${BASE_URL}/auth/me`, "GET", null, token);
 
 /* ================= PROFILE IMAGE ================= */
-
 export const uploadProfileImage = (token, formData) =>
   apiRequest(`${BASE_URL}/auth/upload-profile`, "PUT", formData, token);
 
 /* ================= POSTS ================= */
-
 export const fetchPosts = ({
   page = 1,
   limit = 5,
@@ -87,15 +84,21 @@ export const deletePost = (token, id) =>
   apiRequest(`${BASE_URL}/posts/${id}`, "DELETE", null, token);
 
 /* ================= POST LIKE + BOOKMARK ================= */
-
 export const likePost = (token, postId) =>
   apiRequest(`${BASE_URL}/posts/like/${postId}`, "PUT", null, token);
 
 export const bookmarkPost = (token, postId) =>
   apiRequest(`${BASE_URL}/posts/bookmark/${postId}`, "PUT", null, token);
 
-/* ================= COMMENTS ================= */
+/* ================= BOOKMARKED POSTS ================= */
+export const getBookmarkedPosts = (token) =>
+  apiRequest(`${BASE_URL}/posts/bookmarks`, "GET", null, token);
 
+/* ================= LIKED POSTS ================= */
+export const getLikedPosts = (token) =>
+  apiRequest(`${BASE_URL}/posts/liked`, "GET", null, token);
+
+/* ================= COMMENTS ================= */
 export const getComments = (postId) =>
   apiRequest(`${BASE_URL}/comments/${postId}`);
 
@@ -132,6 +135,5 @@ export const editComment = (token, commentId, text) =>
   );
 
 /* ================= DASHBOARD ================= */
-
 export const getDashboardStats = (token) =>
   apiRequest(`${BASE_URL}/dashboard`, "GET", null, token);

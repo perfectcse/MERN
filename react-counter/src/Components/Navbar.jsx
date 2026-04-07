@@ -1,11 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+
 import "../styles/navbar.css";
 
 function Navbar({ token, role, onLogout }) {
   const navigate = useNavigate();
 
-  // Initialize state from localStorage (Correct way)
+  // Dark mode state
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("theme") === "dark"
   );
@@ -15,7 +16,7 @@ function Navbar({ token, role, onLogout }) {
     navigate("/login");
   };
 
-  // Apply dark mode class when state changes
+  // Apply dark mode
   useEffect(() => {
     if (darkMode) {
       document.body.classList.add("dark");
@@ -50,6 +51,10 @@ function Navbar({ token, role, onLogout }) {
           <>
             <Link to="/dashboard">Dashboard</Link>
             <Link to="/profile">Profile</Link>
+
+            {/* ✅ NEW LINKS */}
+            <Link to="/bookmarks">Bookmarks</Link>
+            <Link to="/liked-posts">Liked</Link>
 
             {/* Dark Mode Toggle */}
             <button className="dark-btn" onClick={toggleDarkMode}>

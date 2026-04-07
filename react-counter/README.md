@@ -248,6 +248,18 @@ Dashboard Stats API
 Protected Routes & Token Expiry Logout
 Frontend + Backend integration completed
 
+Day-32
+🔐 Auth Flow
+Login → JWT token
+Token stored in localStorage
+Sent in headers → Authorization: Bearer token
+Middleware verifies → req.user
+
+🧩 Features Built
+Like Post ✅
+Bookmark Post ✅
+Nested Comments ✅
+Profile Image Upload ✅
 Full backend + frontend integration
 
 ⚙️ Backend Architecture

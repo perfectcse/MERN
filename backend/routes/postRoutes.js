@@ -9,13 +9,24 @@ const {
   deletePost,
   likePost,
   bookmarkPost,
+  getBookmarkedPosts,
+  getLikedPosts,
 } = require("../controllers/postController");
 
 const { protect, adminOnly } = require("../middleware/authMiddleware");
 const { validatePost } = require("../middleware/validationMiddleware");
 
 
-// GET POSTS (Search + Sort + Pagination handled in controller later)
+/* ================= SPECIAL ROUTES ================= */
+
+// 🔥 MUST BE ABOVE /:id
+router.get("/bookmarks", protect, getBookmarkedPosts);
+router.get("/liked", protect, getLikedPosts);
+
+
+/* ================= POSTS ================= */
+
+// GET ALL POSTS
 router.get("/", getPosts);
 
 // GET SINGLE POST
@@ -30,10 +41,14 @@ router.put("/:id", protect, validatePost, updatePost);
 // DELETE POST
 router.delete("/:id", protect, adminOnly, deletePost);
 
+
+/* ================= ACTIONS ================= */
+
 // LIKE POST
 router.post("/like/:postId", protect, likePost);
 
 // BOOKMARK POST
 router.post("/bookmark/:postId", protect, bookmarkPost);
+
 
 module.exports = router;

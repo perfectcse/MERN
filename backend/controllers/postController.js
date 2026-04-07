@@ -4,7 +4,7 @@ const User = require("../models/User");
 const asyncHandler = require("../middleware/asyncHandler");
 
 
-// CREATE POST
+/* ================= CREATE POST ================= */
 exports.createPost = asyncHandler(async (req, res) => {
   const { title, body } = req.body;
 
@@ -23,7 +23,7 @@ exports.createPost = asyncHandler(async (req, res) => {
 });
 
 
-// READ ALL POSTS WITH COMMENT COUNT
+/* ================= GET ALL POSTS ================= */
 exports.getPosts = asyncHandler(async (req, res) => {
   const posts = await Post.find().sort({ createdAt: -1 });
 
@@ -48,7 +48,7 @@ exports.getPosts = asyncHandler(async (req, res) => {
 });
 
 
-// GET SINGLE POST
+/* ================= GET SINGLE POST ================= */
 exports.getSinglePost = asyncHandler(async (req, res) => {
   const post = await Post.findById(req.params.id);
 
@@ -65,7 +65,7 @@ exports.getSinglePost = asyncHandler(async (req, res) => {
 });
 
 
-// UPDATE POST
+/* ================= UPDATE POST ================= */
 exports.updatePost = asyncHandler(async (req, res) => {
   const { title, body } = req.body;
 
@@ -94,7 +94,7 @@ exports.updatePost = asyncHandler(async (req, res) => {
 });
 
 
-// DELETE POST
+/* ================= DELETE POST ================= */
 exports.deletePost = asyncHandler(async (req, res) => {
   const deleted = await Post.findByIdAndDelete(req.params.id);
 
@@ -111,7 +111,7 @@ exports.deletePost = asyncHandler(async (req, res) => {
 });
 
 
-// LIKE POST
+/* ================= LIKE POST ================= */
 exports.likePost = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
   const postId = req.params.postId;
@@ -135,7 +135,7 @@ exports.likePost = asyncHandler(async (req, res) => {
 });
 
 
-// BOOKMARK POST
+/* ================= BOOKMARK POST ================= */
 exports.bookmarkPost = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
   const postId = req.params.postId;
@@ -155,5 +155,31 @@ exports.bookmarkPost = asyncHandler(async (req, res) => {
   res.json({
     success: true,
     bookmarks: user.bookmarks,
+  });
+});
+
+
+/* ================= GET BOOKMARKED POSTS ================= */
+exports.getBookmarkedPosts = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id)
+    .populate("bookmarks")
+    .select("bookmarks");
+
+  res.status(200).json({
+    success: true,
+    data: user.bookmarks,
+  });
+});
+
+
+/* ================= GET LIKED POSTS ================= */
+exports.getLikedPosts = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id)
+    .populate("likedPosts")
+    .select("likedPosts");
+
+  res.status(200).json({
+    success: true,
+    data: user.likedPosts,
   });
 });

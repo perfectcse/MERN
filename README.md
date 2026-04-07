@@ -1,4 +1,4 @@
-# MERN Stack Challenge – Day 1 to 31
+# MERN Stack Challenge – Day 1 to 32
 
 ## Focus
 - JavaScript fundamentals
@@ -524,3 +524,16 @@ File upload (Multer)
 React protected routes
 Token expiry handling
 API structure (Controller → Route → Model)
+
+Day-32
+🔐 Auth Flow
+Login → JWT token
+Token stored in localStorage
+Sent in headers → Authorization: Bearer token
+Middleware verifies → req.user
+
+🧩 Features Built
+Like Post ✅
+Bookmark Post ✅
+Nested Comments ✅
+Profile Image Upload ✅

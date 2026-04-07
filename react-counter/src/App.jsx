@@ -7,6 +7,8 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import SinglePost from "./pages/SinglePost";
+import Bookmarks from "./pages/Bookmarks";
+import LikedPosts from "./pages/LikedPosts";
 
 import Navbar from "./Components/Navbar";
 
@@ -18,11 +20,13 @@ function App() {
   const storedToken = localStorage.getItem("token");
   const storedRole = localStorage.getItem("role");
 
+  // Validate token
   const initialToken =
     storedToken && !isTokenExpired(storedToken)
       ? storedToken
       : null;
 
+  // Remove expired token
   if (storedToken && isTokenExpired(storedToken)) {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
@@ -67,6 +71,18 @@ function App() {
           element={
             token ? <Profile token={token} /> : <Navigate to="/login" />
           }
+        />
+
+        {/* Bookmarks */}
+        <Route
+          path="/bookmarks"
+          element={token ? <Bookmarks /> : <Navigate to="/login" />}
+        />
+
+        {/* Liked Posts */}
+        <Route
+          path="/liked-posts"
+          element={token ? <LikedPosts /> : <Navigate to="/login" />}
         />
 
         {/* Single Post */}
