@@ -25,8 +25,17 @@ const apiRequest = async (url, method = "GET", body = null, token = null) => {
     }
 
     const res = await fetch(url, options);
-    const data = await res.json();
 
+    let data;
+
+    // ✅ Safe JSON parsing (fixes <!DOCTYPE error)
+    try {
+      data = await res.json();
+    } catch {
+      throw new Error("Invalid server response");
+    }
+
+    // Handle HTTP errors
     if (!res.ok) {
       throw new Error(data.message || "Something went wrong");
     }

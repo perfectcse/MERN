@@ -3,7 +3,6 @@ const Comment = require("../models/Comment");
 const User = require("../models/User");
 const asyncHandler = require("../middleware/asyncHandler");
 
-
 /* ================= CREATE POST ================= */
 exports.createPost = asyncHandler(async (req, res) => {
   const { title, body } = req.body;
@@ -22,11 +21,31 @@ exports.createPost = asyncHandler(async (req, res) => {
   });
 });
 
-
-/* ================= GET ALL POSTS ================= */
+/* ================= GET ALL POSTS (DAY-33 UPDATED) ================= */
 exports.getPosts = asyncHandler(async (req, res) => {
-  const posts = await Post.find().sort({ createdAt: -1 });
+  let { page = 1, limit = 5, search = "", sort = "latest" } = req.query;
 
+  page = parseInt(page);
+  limit = parseInt(limit);
+
+  // 🔍 Search (title)
+  const query = {
+    title: { $regex: search, $options: "i" },
+  };
+
+  // 🔽 Sorting
+  let sortOption = { createdAt: -1 }; // latest
+  if (sort === "oldest") sortOption = { createdAt: 1 };
+
+  // 📄 Pagination
+  const posts = await Post.find(query)
+    .sort(sortOption)
+    .skip((page - 1) * limit)
+    .limit(limit);
+
+  const total = await Post.countDocuments(query);
+
+  // 💬 Add comments count
   const postsWithCounts = await Promise.all(
     posts.map(async (post) => {
       const commentsCount = await Comment.countDocuments({
@@ -42,11 +61,12 @@ exports.getPosts = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     success: true,
-    count: postsWithCounts.length,
+    page,
+    totalPages: Math.ceil(total / limit),
+    total,
     data: postsWithCounts,
   });
 });
-
 
 /* ================= GET SINGLE POST ================= */
 exports.getSinglePost = asyncHandler(async (req, res) => {
@@ -63,7 +83,6 @@ exports.getSinglePost = asyncHandler(async (req, res) => {
     data: post,
   });
 });
-
 
 /* ================= UPDATE POST ================= */
 exports.updatePost = asyncHandler(async (req, res) => {
@@ -93,7 +112,6 @@ exports.updatePost = asyncHandler(async (req, res) => {
   });
 });
 
-
 /* ================= DELETE POST ================= */
 exports.deletePost = asyncHandler(async (req, res) => {
   const deleted = await Post.findByIdAndDelete(req.params.id);
@@ -110,58 +128,63 @@ exports.deletePost = asyncHandler(async (req, res) => {
   });
 });
 
-
 /* ================= LIKE POST ================= */
 exports.likePost = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
+  const user = await User.findById(req.user.id);
   const postId = req.params.postId;
 
+  if (!user) {
+    const error = new Error("User not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
   if (user.likedPosts.includes(postId)) {
-    // Unlike
     user.likedPosts = user.likedPosts.filter(
       (id) => id.toString() !== postId
     );
   } else {
-    // Like
     user.likedPosts.push(postId);
   }
 
   await user.save();
 
-  res.json({
+  res.status(200).json({
     success: true,
     likedPosts: user.likedPosts,
   });
 });
 
-
 /* ================= BOOKMARK POST ================= */
 exports.bookmarkPost = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
+  const user = await User.findById(req.user.id);
   const postId = req.params.postId;
 
+  if (!user) {
+    const error = new Error("User not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
   if (user.bookmarks.includes(postId)) {
-    // Remove bookmark
     user.bookmarks = user.bookmarks.filter(
       (id) => id.toString() !== postId
     );
   } else {
-    // Add bookmark
     user.bookmarks.push(postId);
   }
 
   await user.save();
 
-  res.json({
+  res.status(200).json({
     success: true,
     bookmarks: user.bookmarks,
   });
 });
 
-
 /* ================= GET BOOKMARKED POSTS ================= */
 exports.getBookmarkedPosts = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id)
+  const user = await User.findById(req.user.id)
     .populate("bookmarks")
     .select("bookmarks");
 
@@ -171,10 +194,9 @@ exports.getBookmarkedPosts = asyncHandler(async (req, res) => {
   });
 });
 
-
 /* ================= GET LIKED POSTS ================= */
 exports.getLikedPosts = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id)
+  const user = await User.findById(req.user.id)
     .populate("likedPosts")
     .select("likedPosts");
 

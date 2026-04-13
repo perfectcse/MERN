@@ -27,11 +27,16 @@ function Home({ token, role }) {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("latest");
 
-  // Load posts (useCallback to fix dependency warning)
+  /* ================= LOAD POSTS ================= */
   const loadPosts = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await fetchPosts({ page, search, sort });
+      const data = await fetchPosts({
+        page,
+        limit: 5, // ✅ FIXED
+        search,
+        sort,
+      });
 
       if (data.success) {
         setPosts(data.data);
@@ -44,21 +49,26 @@ function Home({ token, role }) {
     }
   }, [page, search, sort]);
 
-  // useEffect
   useEffect(() => {
     loadPosts();
   }, [loadPosts]);
 
-  // Reload posts after create/update/delete/like/bookmark
+  /* ================= RELOAD ================= */
   const reloadPosts = async () => {
-    const data = await fetchPosts({ page, search, sort });
+    const data = await fetchPosts({
+      page,
+      limit: 5, // ✅ FIXED
+      search,
+      sort,
+    });
+
     if (data.success) {
       setPosts(data.data);
       setTotalPages(data.totalPages);
     }
   };
 
-  // Create or Update Post
+  /* ================= CREATE / UPDATE ================= */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -83,7 +93,7 @@ function Home({ token, role }) {
     }
   };
 
-  // Delete Post
+  /* ================= DELETE ================= */
   const handleDelete = async (id) => {
     try {
       const response = await deletePost(token, id);
@@ -99,7 +109,7 @@ function Home({ token, role }) {
     }
   };
 
-  // Edit Post
+  /* ================= EDIT ================= */
   const handleEdit = (post) => {
     setTitle(post.title);
     setBody(post.body);
@@ -107,8 +117,10 @@ function Home({ token, role }) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Like Post
+  /* ================= LIKE ================= */
   const handleLike = async (postId) => {
+    if (!token) return alert("Login required 🔐");
+
     try {
       await likePost(token, postId);
       reloadPosts();
@@ -117,8 +129,10 @@ function Home({ token, role }) {
     }
   };
 
-  // Bookmark Post
+  /* ================= BOOKMARK ================= */
   const handleBookmark = async (postId) => {
+    if (!token) return alert("Login required 🔐");
+
     try {
       await bookmarkPost(token, postId);
       reloadPosts();
@@ -129,7 +143,7 @@ function Home({ token, role }) {
 
   return (
     <div className="home-container">
-      {/* SEARCH + SORT */}
+      {/* ================= SEARCH + SORT ================= */}
       <div className="filters">
         <input
           type="text"
@@ -154,7 +168,7 @@ function Home({ token, role }) {
         </select>
       </div>
 
-      {/* FORM */}
+      {/* ================= FORM ================= */}
       <div className="form-section">
         <h2 className="section-title">
           {editId ? "Update Post" : "Create New Post"}
@@ -182,14 +196,14 @@ function Home({ token, role }) {
         </form>
       </div>
 
-      {/* POSTS */}
+      {/* ================= POSTS ================= */}
       <div className="posts-section">
         <h2 className="section-title">All Posts</h2>
 
         {loading ? (
           <p className="empty-text">Loading posts...</p>
         ) : posts.length === 0 ? (
-          <p className="empty-text">No posts available</p>
+          <p className="empty-text">No posts found</p>
         ) : (
           <>
             <div className="post-list">
@@ -209,6 +223,7 @@ function Home({ token, role }) {
                   <div className="post-buttons">
                     <button
                       className="like-btn"
+                      disabled={!token}
                       onClick={() => handleLike(post._id)}
                     >
                       ❤️ Like
@@ -216,13 +231,14 @@ function Home({ token, role }) {
 
                     <button
                       className="bookmark-btn"
+                      disabled={!token}
                       onClick={() => handleBookmark(post._id)}
                     >
                       🔖 Bookmark
                     </button>
                   </div>
 
-                  {/* View Single Post */}
+                  {/* View Post */}
                   <button
                     className="view-btn"
                     onClick={() => navigate(`/post/${post._id}`)}
@@ -254,7 +270,7 @@ function Home({ token, role }) {
               ))}
             </div>
 
-            {/* PAGINATION */}
+            {/* ================= PAGINATION ================= */}
             <div className="pagination">
               <button
                 onClick={() => setPage(page - 1)}
