@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useState } from "react";
+import { Toaster } from "react-hot-toast";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -20,20 +21,23 @@ function App() {
   const storedToken = localStorage.getItem("token");
   const storedRole = localStorage.getItem("role");
 
-  // Validate token
-  const initialToken =
-    storedToken && !isTokenExpired(storedToken)
-      ? storedToken
-      : null;
+  // ✅ Validate token once
+  const isValidToken =
+    storedToken && !isTokenExpired(storedToken);
 
-  // Remove expired token
+  const [token, setToken] = useState(
+    isValidToken ? storedToken : null
+  );
+
+  const [role, setRole] = useState(
+    isValidToken ? storedRole : null
+  );
+
+  // ✅ Auto remove expired token
   if (storedToken && isTokenExpired(storedToken)) {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
   }
-
-  const [token, setToken] = useState(initialToken);
-  const [role, setRole] = useState(storedRole);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -44,10 +48,13 @@ function App() {
 
   return (
     <div className="app-container">
+      {/* 🔥 Toast Global Setup */}
+      <Toaster position="top-right" reverseOrder={false} />
+
       <Navbar token={token} role={role} onLogout={handleLogout} />
 
       <Routes>
-        {/* Home */}
+        {/* HOME */}
         <Route
           path="/"
           element={
@@ -59,13 +66,15 @@ function App() {
           }
         />
 
-        {/* Dashboard */}
+        {/* DASHBOARD */}
         <Route
           path="/dashboard"
-          element={token ? <Dashboard /> : <Navigate to="/login" />}
+          element={
+            token ? <Dashboard /> : <Navigate to="/login" />
+          }
         />
 
-        {/* Profile */}
+        {/* PROFILE */}
         <Route
           path="/profile"
           element={
@@ -73,25 +82,31 @@ function App() {
           }
         />
 
-        {/* Bookmarks */}
+        {/* BOOKMARKS */}
         <Route
           path="/bookmarks"
-          element={token ? <Bookmarks /> : <Navigate to="/login" />}
+          element={
+            token ? <Bookmarks token={token} /> : <Navigate to="/login" />
+          }
         />
 
-        {/* Liked Posts */}
+        {/* LIKED POSTS */}
         <Route
           path="/liked-posts"
-          element={token ? <LikedPosts /> : <Navigate to="/login" />}
+          element={
+            token ? <LikedPosts token={token} /> : <Navigate to="/login" />
+          }
         />
 
-        {/* Single Post */}
+        {/* SINGLE POST */}
         <Route
           path="/post/:id"
-          element={token ? <SinglePost /> : <Navigate to="/login" />}
+          element={
+            token ? <SinglePost token={token} /> : <Navigate to="/login" />
+          }
         />
 
-        {/* Login */}
+        {/* LOGIN */}
         <Route
           path="/login"
           element={
@@ -103,11 +118,16 @@ function App() {
           }
         />
 
-        {/* Register */}
+        {/* REGISTER */}
         <Route
           path="/register"
-          element={token ? <Navigate to="/" /> : <Register />}
+          element={
+            token ? <Navigate to="/" /> : <Register />
+          }
         />
+
+        {/* FALLBACK */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>
   );

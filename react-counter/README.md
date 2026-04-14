@@ -269,71 +269,7 @@ day-33
 ✔ Dashboard fixed (correct likes count)
 ✔ UI improved (modern CSS)
 ✔ Error-free & optimized code
-⚙️ Backend Architecture
-backend
-│
-├── middleware
-│   ├── authMiddleware.js
-│   ├── validationMiddleware.js
-│   └── errorMiddleware.js
-│
-├── models
-│   ├── User.js
-│   └── Post.js
-│
-├── routes
-│   ├── authRoutes.js
-│   └── postRoutes.js
-│
-└── server.js
 
-
-🔐 Authentication Flow
-User Login
-    ↓
-JWT Token Generated
-    ↓
-Token stored in LocalStorage
-    ↓
-Protected API requests
-    ↓
-Backend verifies token
-
-
-📦 API Features Implemented
-
-User Registration
-User Login
-JWT Authentication
-Role Based Authorization
-Create Post
-Update Post
-Delete Post (Admin only)
-Validation Middleware
-Global Error Middleware
-
-
-📘 Concepts Learned
-
-REST API Design
-Express Middleware
-JWT Authentication
-Role Based Authorization
-Request Validation
-Global Error Handling
-MongoDB CRUD Operations
-Frontend-Backend Integration
-
-
-🚀 Next Goals
-Upcoming improvements in the challenge:
-
-Advanced API features
-Pagination & filtering
-File upload handling
-API security improvements
-Advanced frontend architecture
-Full project deployment
 
 
 💪 Challenge Goal

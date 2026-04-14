@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 import {
   fetchPosts,
@@ -19,9 +20,10 @@ function Home({ token, role }) {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [editId, setEditId] = useState(null);
-  const [loading, setLoading] = useState(true);
 
-  // Pagination + Filters
+  const [loading, setLoading] = useState(true);
+  const [btnLoading, setBtnLoading] = useState(false);
+
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
@@ -33,7 +35,7 @@ function Home({ token, role }) {
     try {
       const data = await fetchPosts({
         page,
-        limit: 5, // ✅ FIXED
+        limit: 5,
         search,
         sort,
       });
@@ -41,9 +43,11 @@ function Home({ token, role }) {
       if (data.success) {
         setPosts(data.data);
         setTotalPages(data.totalPages);
+      } else {
+        toast.error("Failed to load posts");
       }
-    } catch (error) {
-      console.error("Error loading posts:", error);
+    } catch {
+      toast.error("Server error");
     } finally {
       setLoading(false);
     }
@@ -57,7 +61,7 @@ function Home({ token, role }) {
   const reloadPosts = async () => {
     const data = await fetchPosts({
       page,
-      limit: 5, // ✅ FIXED
+      limit: 5,
       search,
       sort,
     });
@@ -72,40 +76,45 @@ function Home({ token, role }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!token) {
-      alert("Login first 🔐");
-      return;
-    }
+    if (!token) return toast.error("Login required 🔐");
+
+    setBtnLoading(true);
 
     try {
       if (editId) {
         await updatePost(token, editId, { title, body });
+        toast.success("Post updated ✅");
         setEditId(null);
       } else {
         await createPost(token, { title, body });
+        toast.success("Post created 🚀");
       }
 
       setTitle("");
       setBody("");
       reloadPosts();
-    } catch (error) {
-      console.error("Submit error:", error);
+    } catch {
+      toast.error("Something went wrong");
+    } finally {
+      setBtnLoading(false);
     }
   };
 
   /* ================= DELETE ================= */
   const handleDelete = async (id) => {
+    setBtnLoading(true);
+
     try {
-      const response = await deletePost(token, id);
+      const res = await deletePost(token, id);
 
-      if (!response.success) {
-        alert(response.message);
-        return;
-      }
+      if (!res.success) return toast.error(res.message);
 
+      toast.success("Post deleted 🗑️");
       reloadPosts();
-    } catch (error) {
-      console.error("Delete error:", error);
+    } catch {
+      toast.error("Delete failed");
+    } finally {
+      setBtnLoading(false);
     }
   };
 
@@ -119,31 +128,33 @@ function Home({ token, role }) {
 
   /* ================= LIKE ================= */
   const handleLike = async (postId) => {
-    if (!token) return alert("Login required 🔐");
+    if (!token) return toast.error("Login required 🔐");
 
     try {
       await likePost(token, postId);
+      toast.success("Liked ❤️");
       reloadPosts();
-    } catch (error) {
-      console.log("Like error:", error);
+    } catch {
+      toast.error("Like failed");
     }
   };
 
   /* ================= BOOKMARK ================= */
   const handleBookmark = async (postId) => {
-    if (!token) return alert("Login required 🔐");
+    if (!token) return toast.error("Login required 🔐");
 
     try {
       await bookmarkPost(token, postId);
+      toast.success("Bookmarked 🔖");
       reloadPosts();
-    } catch (error) {
-      console.log("Bookmark error:", error);
+    } catch {
+      toast.error("Bookmark failed");
     }
   };
 
   return (
     <div className="home-container">
-      {/* ================= SEARCH + SORT ================= */}
+      {/* ================= FILTERS ================= */}
       <div className="filters">
         <input
           type="text"
@@ -188,10 +199,14 @@ function Home({ token, role }) {
             value={body}
             onChange={(e) => setBody(e.target.value)}
             required
-          ></textarea>
+          />
 
-          <button type="submit">
-            {editId ? "Update Post" : "Add Post"}
+          <button type="submit" disabled={btnLoading}>
+            {btnLoading
+              ? "Processing..."
+              : editId
+              ? "Update Post"
+              : "Add Post"}
           </button>
         </form>
       </div>
@@ -201,7 +216,7 @@ function Home({ token, role }) {
         <h2 className="section-title">All Posts</h2>
 
         {loading ? (
-          <p className="empty-text">Loading posts...</p>
+          <p className="empty-text">Loading...</p>
         ) : posts.length === 0 ? (
           <p className="empty-text">No posts found</p>
         ) : (
@@ -213,7 +228,7 @@ function Home({ token, role }) {
                   <p>{post.body}</p>
 
                   <div className="post-info">
-                    <span>💬 {post.commentsCount || 0} Comments</span>
+                    <span>💬 {post.commentsCount || 0}</span>
                     <span>
                       📅 {new Date(post.createdAt).toDateString()}
                     </span>
@@ -238,7 +253,7 @@ function Home({ token, role }) {
                     </button>
                   </div>
 
-                  {/* View Post */}
+                  {/* View */}
                   <button
                     className="view-btn"
                     onClick={() => navigate(`/post/${post._id}`)}
@@ -246,7 +261,7 @@ function Home({ token, role }) {
                     View Post
                   </button>
 
-                  {/* Edit/Delete */}
+                  {/* Actions */}
                   {token && (
                     <div className="post-actions">
                       <button
@@ -276,11 +291,11 @@ function Home({ token, role }) {
                 onClick={() => setPage(page - 1)}
                 disabled={page === 1}
               >
-                Previous
+                Prev
               </button>
 
               <span>
-                Page {page} of {totalPages}
+                {page} / {totalPages}
               </span>
 
               <button
