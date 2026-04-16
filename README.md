@@ -556,3 +556,10 @@ Day 34 – MERN Stack 🚀
 
 Outcome:
 Application now feels like a real product with smooth UX and professional behavior.
+
+DAy-35
+✔ Converted UI into reusable components
+✔ Created PostCard, Loader, EmptyState
+✔ Cleaned Home.jsx (logic separated from UI)
+✔ Added realistic post data
+✔ Improved structure (modular code)

@@ -270,7 +270,23 @@ day-33
 ✔ UI improved (modern CSS)
 ✔ Error-free & optimized code
 
+Day 34 – MERN Stack 🚀
 
+✔ Replaced alerts with toast notifications (better UX)
+✔ Added loading states (buttons + page)
+✔ Improved error handling (UI-based)
+✔ Cleaned and optimized code structure
+✔ Enhanced user interaction (disable buttons, feedback)
+
+Outcome:
+Application now feels like a real product with smooth UX and professional behavior.
+
+Day-35
+✔ Converted UI into reusable components
+✔ Created PostCard, Loader, EmptyState
+✔ Cleaned Home.jsx (logic separated from UI)
+✔ Added realistic post data
+✔ Improved structure (modular code)
 
 💪 Challenge Goal
 The goal is to build a complete full-stack production-ready MERN application over 100 days while documenting the learning process.
