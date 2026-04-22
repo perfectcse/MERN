@@ -563,3 +563,9 @@ DAy-35
 ✔ Cleaned Home.jsx (logic separated from UI)
 ✔ Added realistic post data
 ✔ Improved structure (modular code)
+
+Day-36
+✔ ❤️ Like toggle (active / inactive)
+✔ 🔖 Bookmark toggle (saved / unsaved)
+✔ Instant UI update (no reload feeling)
+✔ Better button feedback (disable / loading)

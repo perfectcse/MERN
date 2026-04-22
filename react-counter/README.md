@@ -288,6 +288,12 @@ Day-35
 ✔ Added realistic post data
 ✔ Improved structure (modular code)
 
+Day-36
+✔ ❤️ Like toggle (active / inactive)
+✔ 🔖 Bookmark toggle (saved / unsaved)
+✔ Instant UI update (no reload feeling)
+✔ Better button feedback (disable / loading)
+
 💪 Challenge Goal
 The goal is to build a complete full-stack production-ready MERN application over 100 days while documenting the learning process.
 Consistency over perfection.
