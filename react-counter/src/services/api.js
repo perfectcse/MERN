@@ -1,5 +1,4 @@
-const BASE_URL = "http://localhost:5000/api";
-
+const BASE_URL = "https://mern-backend-hfgo.onrender.com/api";
 /* ================= COMMON API REQUEST ================= */
 const apiRequest = async (url, method = "GET", body = null, token = null) => {
   try {
