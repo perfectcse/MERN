@@ -1,6 +1,9 @@
 import { useEffect, useState, useCallback } from "react";
-import axios from "axios";
+
 import StatsCard from "../Components/StatCard";
+
+import { getDashboardStats } from "../services/api";
+
 import "../styles/dashboard.css";
 
 function Dashboard() {
@@ -13,21 +16,16 @@ function Dashboard() {
 
   const [loading, setLoading] = useState(true);
 
+  /* ================= LOAD DASHBOARD ================= */
+
   const loadDashboard = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await axios.get(
-        "http://localhost:5000/api/dashboard",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const data = await getDashboardStats(token);
 
-      if (res.data.success) {
-        setStats(res.data.data);
+      if (data.success) {
+        setStats(data.data);
       }
     } catch (error) {
       console.log("Dashboard error:", error);
@@ -48,21 +46,34 @@ function Dashboard() {
         <p className="loading">Loading stats...</p>
       ) : (
         <>
+          {/* ================= STATS ================= */}
+
           <div className="stats-container">
             <StatsCard title="Total Posts" value={stats.totalPosts} />
-            <StatsCard title="Total Comments" value={stats.totalComments} />
+
+            <StatsCard
+              title="Total Comments"
+              value={stats.totalComments}
+            />
+
             <StatsCard title="Total Users" value={stats.totalUsers} />
+
             <StatsCard title="Total Likes" value={stats.totalLikes} />
           </div>
 
-          {/* Chart Section */}
+          {/* ================= OVERVIEW ================= */}
+
           <div className="chart-container">
             <h3>Platform Overview</h3>
+
             <div className="chart-box">
-              <p>Posts: {stats.totalPosts}</p>
-              <p>Comments: {stats.totalComments}</p>
-              <p>Users: {stats.totalUsers}</p>
-              <p>Likes: {stats.totalLikes}</p>
+              <p>📝 Posts: {stats.totalPosts}</p>
+
+              <p>💬 Comments: {stats.totalComments}</p>
+
+              <p>👤 Users: {stats.totalUsers}</p>
+
+              <p>❤️ Likes: {stats.totalLikes}</p>
             </div>
           </div>
         </>
