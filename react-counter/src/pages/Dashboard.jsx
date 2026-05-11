@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 
-import StatsCard from "../Components/StatCard";
+import StatCard from "../Components/StatCard";
 
 import { getDashboardStats } from "../services/api";
 
@@ -49,16 +49,16 @@ function Dashboard() {
           {/* ================= STATS ================= */}
 
           <div className="stats-container">
-            <StatsCard title="Total Posts" value={stats.totalPosts} />
+            <StatCard title="Total Posts" value={stats.totalPosts} />
 
-            <StatsCard
+            <StatCard
               title="Total Comments"
               value={stats.totalComments}
             />
 
-            <StatsCard title="Total Users" value={stats.totalUsers} />
+            <StatCard title="Total Users" value={stats.totalUsers} />
 
-            <StatsCard title="Total Likes" value={stats.totalLikes} />
+            <StatCard title="Total Likes" value={stats.totalLikes} />
           </div>
 
           {/* ================= OVERVIEW ================= */}
