@@ -314,3 +314,9 @@ This project is for educational purposes.
 **Key Achievement**: From JavaScript basics to production-ready full-stack app
 
 *Built with dedication and curiosity* 🚀
+🌐 Live Project Links
+Frontend
+https://mern-frontend-e9vw.onrender.com
+
+Backend API
+https://mern-backendd-hxj0.onrender.com
